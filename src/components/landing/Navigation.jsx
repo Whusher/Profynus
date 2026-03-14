@@ -2,7 +2,7 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Link } from "react-router"
 import { Menu, X } from 'lucide-react'
-import Logo from "./Logo"
+import Logo from "../layout/Logo"
 
 /**
  * Navigation bar with responsive mobile menu

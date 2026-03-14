@@ -8,7 +8,7 @@ import HowItWorksSection from "@/components/landing/HowItWorksSection"
 import MusicShowcaseSection from "@/components/landing/MusicShowcaseSection"
 import StatsSection from "@/components/landing/StatsSection"
 import DownloadSection from "@/components/landing/DownloadSection"
-import Footer from "@/components/landing/Footer"
+import Footer from "@/components/layout/Footer"
 
 /**
  * Landing Page - Main entry point for new users

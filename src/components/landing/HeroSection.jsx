@@ -1,6 +1,6 @@
 import { motion } from "framer-motion"
 import { Play, ChevronRight } from 'lucide-react'
-import MusicParticles from "./MusicParticles"
+import MusicParticles from "../layout/MusicParticles"
 
 /**
  * Hero section with call-to-action buttons

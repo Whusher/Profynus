@@ -4,10 +4,10 @@ import { Music, Headphones, Volume2 } from 'lucide-react'
 /**
  * Animated music-themed particles for background effect
  */
-export default function MusicParticles() {
+export default function MusicParticles({particlesPreference = 20}) {
   return (
     <div className="absolute inset-0">
-      {[...Array(20)].map((_, i) => (
+      {[...Array(particlesPreference)].map((_, i) => (
         <motion.div
           key={i}
           className="absolute w-8 h-8 text-cyan-500/30"
