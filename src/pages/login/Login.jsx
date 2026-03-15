@@ -24,7 +24,7 @@ import MusicParticles from "@/components/layout/MusicParticles"
 import Logo from "@/components/layout/Logo"
 
 export default function LoginPage() {
-    const navigation = useNavigate();
+    const navigate = useNavigate();
 
     // Form state
     const [formData, setFormData] = useState({
@@ -102,6 +102,7 @@ export default function LoginPage() {
             setIsLoading(true)
             try {
                 sileo.success({ title: 'Welcome again' });
+                navigate('/home');
             } catch (error) {
                 console.log(error);
                 setLoginError("An error occurred. Please try again.")
@@ -328,18 +329,25 @@ export default function LoginPage() {
                 id="right-side"
                 className="relative hidden md:flex w-full md:basis-1/2 flex-col justify-center items-center bg-blend-color-dodge bg-black py-10 md:py-0 md:h-full"
             >
+                <div
+                    aria-hidden="true"
+                    className="absolute top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-cyan-500/12 blur-3xl"
+                />
                 <motion.div
                     id="image-container"
-                    className="z-10 p-4 mt-2 mx-auto bg-linear-to-b from-60% from-black to-cyan-700 
-                    shadow-2xl shadow-cyan-500 animate-[shake-shadow_8s_infinite_ease-in]"
+                    className="relative z-10 p-4 mt-2 mx-auto rounded-4xl border border-cyan-400/20 bg-linear-to-b from-60% from-black to-cyan-700 
+                    animate-[shake-shadow_8s_infinite_ease-in]"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
+                    style={{
+                        boxShadow: "0 28px 70px rgba(8, 145, 178, 0.24), 0 16px 38px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08)",
+                    }}
                 >
                     <img
                         src={ProfynusWolf || "/placeholder.svg"}
                         alt="business logotype"
-                        className="w-[15rem] sm:w-[18rem] md:w-[20rem]"
+                        className="w-60 sm:w-72 md:w-80 drop-shadow-[0_18px_28px_rgba(0,0,0,0.45)]"
                     />
                 </motion.div>
 
@@ -360,12 +368,18 @@ export default function LoginPage() {
                     {/* Animated separator */}
                     <div
                         id="separator-line"
-                        className="w-5 rounded-3xl absolute h-50 md:h-[400px] bottom-2 blur-lg center bg-gradient-to-b 
-                      from-cyan-700 z-0 to-cyan-900/50 shadow-4xl shadow-cyan-500 p-1"
+                                                className="w-4 rounded-3xl absolute h-50 md:h-100 bottom-2 blur-md center bg-linear-to-b 
+                                            from-cyan-400/80 via-cyan-600 z-0 to-cyan-950/30"
+                                                style={{
+                                                        boxShadow: "0 0 28px rgba(34, 211, 238, 0.3), 0 0 90px rgba(8, 145, 178, 0.16)",
+                                                }}
                     />
-
-                    <p className="w-full sm:w-1/2 text-center text-sm sm:text-base text-white" >
-                        The application that your ears, essence and style needs.
+                    {/* Promotion phrase */}
+                        <p className="w-full sm:w-1/2 px-4 sm:px-0 text-center text-sm sm:text-base md:text-lg font-light leading-relaxed text-cyan-50/85">
+                            The application for your{" "}
+                            <span className="font-semibold tracking-[0.18em] text-cyan-200 uppercase">ears</span>,{" "}
+                            <span className="font-semibold tracking-[0.18em] text-cyan-300 uppercase">essence</span>, and{" "}
+                            <span className="font-semibold tracking-[0.18em] text-cyan-200 uppercase">style</span>.
                     </p>
                 </motion.div>
 

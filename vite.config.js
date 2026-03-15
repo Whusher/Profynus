@@ -15,6 +15,7 @@ export default defineConfig({
       '@services': path.resolve('src/services'),
       '@assets': path.resolve('src/assets'),
       '@styles': path.resolve('src/styles'),
+      '@store': path.resolve('src/store'),
     }
   }
 })

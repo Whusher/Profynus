@@ -7,6 +7,6 @@
  * import { useAuthStore, useUIStore } from '@/store';
  */
 
-export { default as useAuthStore } from './useAuthStore';
-export { default as useUIStore }   from './useUIStore';
-export { default as useUserStore } from './useUserStore';
+export { default as useAuthStore } from './auth/AuthStore';
+export { default as useUIStore }   from './ui/UIStore';
+export { default as useUserStore } from './user/UserStore';

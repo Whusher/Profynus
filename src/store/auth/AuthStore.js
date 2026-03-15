@@ -30,7 +30,7 @@ const useAuthStore = create(
           try {
             const data = await authService.login(credentials);
             localStorage.setItem('access_token', data.accessToken);
-            localStorage.setItem('refresh_token', data.refreshToken);
+            // localStorage.setItem('refresh_token', data.refreshToken); Will be stored in cookies
 
             set({
               user: data.user,
