@@ -17,6 +17,7 @@ import {
 } from "lucide-react"
 import usePlayerStore from "@store/player/PlayerStore"
 import ProfileVisualizer from "@components/music/visualizers/ProfileVisualizer"
+import { useMobile } from "@hooks/use-mobile"
 
 const RING_PROFILE_OPTIONS = [
   { key: "aggressive", label: "Aggressive" },
@@ -36,6 +37,7 @@ export default function FloatingMusicPlayer() {
   const closePlayer = usePlayerStore((state) => state.closePlayer)
   const openModal = usePlayerStore((state) => state.openModal)
   const minimizeToMini = usePlayerStore((state) => state.minimizeToMini)
+  const isMobile = useMobile()
 
   const track = playlist[currentTrackIndex]
 
@@ -54,8 +56,14 @@ export default function FloatingMusicPlayer() {
   const [volume, setVolume] = useState(0.72)
   const [isMuted, setIsMuted] = useState(false)
   const [ringProfile, setRingProfile] = useState("edm")
+  const [isProfileSelectorOpen, setIsProfileSelectorOpen] = useState(false)
 
   const trackUrl = track?.url || ""
+
+  const activeRingProfile = useMemo(
+    () => RING_PROFILE_OPTIONS.find((profileOption) => profileOption.key === ringProfile) ?? RING_PROFILE_OPTIONS[0],
+    [ringProfile],
+  )
 
   const formatTime = (seconds) => {
     const safeValue = Number.isFinite(seconds) ? seconds : 0
@@ -194,6 +202,12 @@ export default function FloatingMusicPlayer() {
     }
   }, [isVisible])
 
+  useEffect(() => {
+    if (!isModalOpen) return
+
+    setIsProfileSelectorOpen(!isMobile)
+  }, [isModalOpen, isMobile])
+
   const handleClosePlayer = useCallback(() => {
     if (audioRef.current) {
       audioRef.current.pause()
@@ -258,6 +272,17 @@ export default function FloatingMusicPlayer() {
       setIsMuted(false)
     }
   }
+
+  const handleRingProfileSelect = useCallback(
+    (profileKey) => {
+      setRingProfile(profileKey)
+
+      if (isMobile) {
+        setIsProfileSelectorOpen(false)
+      }
+    },
+    [isMobile],
+  )
 
   const toggleMute = () => {
     if (!audioRef.current) return
@@ -445,28 +470,51 @@ export default function FloatingMusicPlayer() {
 
               <div className="space-y-3 p-4">
                 <div className="space-y-2 rounded-2xl border border-(--prof-border) bg-(--prof-bg-panel) p-3">
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-200">Shape profile</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {RING_PROFILE_OPTIONS.map((profileOption) => {
-                      const profileKey = profileOption.key
-                      const isActive = ringProfile === profileKey
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-200">Shape profile</p>
+                      <p className="mt-1 truncate text-xs text-slate-400 sm:hidden">{activeRingProfile.label} selected</p>
+                    </div>
 
-                      return (
-                        <button
-                          key={profileKey}
-                          type="button"
-                          onClick={() => setRingProfile(profileKey)}
-                          className={[
-                            "rounded-xl border px-3 py-2 text-xs font-medium uppercase tracking-[0.18em] transition",
-                            isActive
-                              ? "border-cyan-300/60 bg-cyan-400/20 text-cyan-100"
-                              : "border-(--prof-border) bg-(--prof-bg-elevated) text-slate-300 hover:border-(--prof-border-strong) hover:text-cyan-100",
-                          ].join(" ")}
-                        >
-                          {profileOption.label}
-                        </button>
-                      )
-                    })}
+                    <button
+                      type="button"
+                      onClick={() => setIsProfileSelectorOpen((currentValue) => !currentValue)}
+                      className="inline-flex h-9 items-center gap-2 rounded-full border border-(--prof-border) bg-(--prof-bg-elevated) px-3 text-[11px] font-medium uppercase tracking-[0.16em] text-slate-200 transition hover:border-cyan-400/40 hover:text-cyan-100 sm:hidden"
+                      aria-expanded={isProfileSelectorOpen}
+                      aria-controls="profile-visualizer-options"
+                      aria-label={isProfileSelectorOpen ? "Hide shape profile options" : "Show shape profile options"}
+                    >
+                      {activeRingProfile.label}
+                      <ChevronDown
+                        size={14}
+                        className={["transition-transform duration-200", isProfileSelectorOpen ? "rotate-180" : "rotate-0"].join(" ")}
+                      />
+                    </button>
+                  </div>
+
+                  <div id="profile-visualizer-options" className={isProfileSelectorOpen || !isMobile ? "block" : "hidden"}>
+                    <div className="grid grid-cols-2 gap-2 pt-2">
+                      {RING_PROFILE_OPTIONS.map((profileOption) => {
+                        const profileKey = profileOption.key
+                        const isActive = ringProfile === profileKey
+
+                        return (
+                          <button
+                            key={profileKey}
+                            type="button"
+                            onClick={() => handleRingProfileSelect(profileKey)}
+                            className={[
+                              "rounded-xl border px-3 py-2 text-xs font-medium uppercase tracking-[0.18em] transition",
+                              isActive
+                                ? "border-cyan-300/60 bg-cyan-400/20 text-cyan-100"
+                                : "border-(--prof-border) bg-(--prof-bg-elevated) text-slate-300 hover:border-(--prof-border-strong) hover:text-cyan-100",
+                            ].join(" ")}
+                          >
+                            {profileOption.label}
+                          </button>
+                        )
+                      })}
+                    </div>
                   </div>
                 </div>
 
