@@ -22,7 +22,7 @@ const MusicPlayerPage = lazy(() => import('@pages/music-player/MusicPlayerPage')
 const renderLazyRoute = (element) => <Suspense fallback={<RouteLoader />}>{element}</Suspense>
 
 createRoot(document.getElementById('root')).render(
-  <BrowserRouter>
+  <BrowserRouter basename='./'>
     <Routes>
       {/* Public paths */}
       <Route path='/' element={renderLazyRoute(<LandingPage/>)} />
