@@ -57,6 +57,7 @@ export default function FloatingMusicPlayer() {
   const [isMuted, setIsMuted] = useState(false)
   const [ringProfile, setRingProfile] = useState("edm")
   const [isProfileSelectorOpen, setIsProfileSelectorOpen] = useState(false)
+  const [isQueueOpen, setIsQueueOpen] = useState(false)
 
   const trackUrl = track?.url || ""
 
@@ -206,6 +207,7 @@ export default function FloatingMusicPlayer() {
     if (!isModalOpen) return
 
     setIsProfileSelectorOpen(!isMobile)
+    setIsQueueOpen(!isMobile)
   }, [isModalOpen, isMobile])
 
   const handleClosePlayer = useCallback(() => {
@@ -421,7 +423,23 @@ export default function FloatingMusicPlayer() {
 
             <div className="flex w-full flex-col lg:w-[25rem]">
               <div className="flex items-center justify-between border-b border-(--prof-border) px-4 py-3">
-                <p className="text-sm font-semibold uppercase tracking-[0.22em] text-cyan-200">Queue</p>
+                <button
+                  type="button"
+                  onClick={() => setIsQueueOpen((v) => !v)}
+                  className="flex min-w-0 items-center gap-2 sm:pointer-events-none"
+                  aria-expanded={isQueueOpen}
+                  aria-controls="player-queue-list"
+                  aria-label={isQueueOpen ? "Hide queue" : "Show queue"}
+                >
+                  <p className="text-sm font-semibold uppercase tracking-[0.22em] text-cyan-200">Queue</p>
+                  <span className="text-xs text-slate-500 sm:hidden">
+                    {currentTrackIndex + 1}&nbsp;/&nbsp;{playlist.length}
+                  </span>
+                  <ChevronDown
+                    size={14}
+                    className={["text-slate-400 transition-transform duration-200 sm:hidden", isQueueOpen ? "rotate-180" : "rotate-0"].join(" ")}
+                  />
+                </button>
                 <div className="flex items-center gap-1">
                   <button
                     type="button"
@@ -442,7 +460,7 @@ export default function FloatingMusicPlayer() {
                 </div>
               </div>
 
-              <div className="max-h-56 overflow-y-auto border-b border-(--prof-border) p-3 lg:max-h-none lg:flex-1">
+              <div id="player-queue-list" className={["border-b border-(--prof-border) p-3", isQueueOpen || !isMobile ? "max-h-56 overflow-y-auto lg:max-h-none lg:flex-1" : "hidden"].join(" ")}>
                 <div className="space-y-2">
                   {playlist.map((item, index) => {
                     const isActive = index === currentTrackIndex
