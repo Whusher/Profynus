@@ -131,7 +131,7 @@ export default function Header() {
           isHeaderVisible ? "translate-y-0" : "-translate-y-full",
         ].join(" ")}
       >
-        <div className="mx-auto flex w-full max-w-7xl flex-col px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex w-full max-w-7xl flex-col px-4 sm:px-6 lg:max-w-[88rem] lg:px-8 2xl:max-w-[96rem] 2xl:px-10">
           <div className="flex min-h-20 items-center justify-between gap-3 py-3">
           <div className="flex min-w-0 items-center gap-3">
             <Link

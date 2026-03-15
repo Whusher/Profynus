@@ -19,7 +19,7 @@ export default function AppPageTemplate({
         <div className="absolute inset-0 bg-[linear-gradient(rgba(34,211,238,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.045)_1px,transparent_1px)] bg-size-[30px_30px] mask-[radial-gradient(circle_at_center,black,transparent_78%)]" />
       </div>
 
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 lg:max-w-[88rem] 2xl:max-w-[96rem]">
         <motion.div
           className="overflow-hidden rounded-[28px] border border-[color:var(--prof-border)] bg-linear-to-br from-[var(--prof-bg-base)] via-[var(--prof-bg-elevated)] to-cyan-950/30 p-6 shadow-[0_0_80px_rgba(6,182,212,0.08)] backdrop-blur-xl sm:p-8"
           initial={{ opacity: 0, y: 20 }}
@@ -59,7 +59,7 @@ export default function AppPageTemplate({
           </div>
         </motion.div>
 
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px] 2xl:grid-cols-[minmax(0,1fr)_380px]">
           <div className="space-y-6">{children}</div>
           {aside ? <aside className="space-y-6">{aside}</aside> : null}
         </div>

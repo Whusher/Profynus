@@ -41,7 +41,7 @@ export default function Footer({ variant = "landing" }) {
 
   return (
     <footer className="border-t border-[color:var(--prof-border)] bg-[var(--prof-bg-base)] py-12">
-      <div className="container mx-auto px-4">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:max-w-[88rem] lg:px-8 2xl:max-w-[96rem] 2xl:px-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Brand Section */}
           <div>
