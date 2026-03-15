@@ -17,5 +17,6 @@ export default defineConfig({
       '@styles': path.resolve('src/styles'),
       '@store': path.resolve('src/store'),
     }
-  }
+  },
+  base: '/'
 })
