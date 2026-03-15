@@ -1,5 +1,34 @@
 @import "tailwindcss";
 
+:root {
+  --prof-bg-base: #000000;
+  --prof-bg-elevated: rgba(2, 6, 23, 0.88);
+  --prof-bg-elevated-strong: rgba(2, 6, 23, 0.95);
+  --prof-bg-panel: rgba(8, 15, 28, 0.84);
+  --prof-bg-panel-soft: rgba(8, 15, 28, 0.68);
+  --prof-bg-chip: rgba(6, 31, 49, 0.78);
+  --prof-bg-chip-hover: rgba(8, 47, 73, 0.86);
+  --prof-border: rgba(8, 145, 178, 0.22);
+  --prof-border-strong: rgba(34, 211, 238, 0.34);
+  --prof-accent: #22d3ee;
+  --prof-accent-strong: #a5f3fc;
+  --prof-text-primary: #f8fafc;
+  --prof-text-muted: #94a3b8;
+  --prof-shadow-soft: rgba(2, 12, 27, 0.45);
+  --prof-shadow-strong: rgba(2, 12, 27, 0.62);
+  --prof-danger-bg: rgba(69, 10, 10, 0.65);
+  --prof-danger-border: rgba(127, 29, 29, 0.72);
+}
+
+html {
+  background: var(--prof-bg-base);
+}
+
+body {
+  background: var(--prof-bg-base);
+  color: var(--prof-text-primary);
+}
+
 /*Import font*/
 @font-face {
   font-family: 'Audiowide';

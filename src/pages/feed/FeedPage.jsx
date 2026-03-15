@@ -34,7 +34,7 @@ function FeedContent() {
         <TemplateCard title="Featured upload rail" description="A hero strip for standout tracks, editor picks, or sponsored releases.">
           <div className="space-y-3">
             {featuredUploads.map((item) => (
-              <div key={item.title} className="rounded-2xl border border-white/6 bg-white/[0.03] p-4">
+              <div key={item.title} className="rounded-2xl border border-cyan-950/70 bg-slate-950/80 p-4">
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-base font-semibold text-white">{item.title}</p>
@@ -53,7 +53,7 @@ function FeedContent() {
         <TemplateCard title="Engagement mechanics" description="The feed design should make the main actions impossible to miss.">
           <div className="grid gap-3 sm:grid-cols-2">
             {engagementTools.map((item) => (
-              <div key={item.title} className="rounded-2xl border border-white/6 bg-white/[0.03] p-4">
+              <div key={item.title} className="rounded-2xl border border-cyan-950/70 bg-slate-950/80 p-4">
                 <p className="text-sm font-medium text-white">{item.title}</p>
                 <p className="mt-2 text-sm leading-6 text-slate-400">{item.description}</p>
               </div>

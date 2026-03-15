@@ -6,9 +6,41 @@ import Logo from "./Logo"
 /**
  * Footer with links, social media, and newsletter signup
  */
-export default function Footer() {
+const landingQuickLinks = [
+  { label: "Features", href: "#features" },
+  { label: "How It Works", href: "#how-it-works" },
+  { label: "Music", href: "#showcase" },
+  { label: "Download", href: "#download" },
+]
+
+const appQuickLinks = [
+  { label: "Home", href: "/home" },
+  { label: "Feed", href: "/feed" },
+  { label: "Friends", href: "/friends" },
+  { label: "History", href: "/history" },
+]
+
+const landingSupportLinks = [
+  { label: "Help Center", href: "#" },
+  { label: "Contact Us", href: "#" },
+  { label: "FAQs", href: "#" },
+  { label: "Privacy Policy", href: "#" },
+]
+
+const appSupportLinks = [
+  { label: "Account", href: "/profile" },
+  { label: "Music Player", href: "/moremusic" },
+  { label: "Landing", href: "/" },
+  { label: "Sign out flow", href: "/login" },
+]
+
+export default function Footer({ variant = "landing" }) {
+  const isApp = variant === "app"
+  const quickLinks = isApp ? appQuickLinks : landingQuickLinks
+  const supportLinks = isApp ? appSupportLinks : landingSupportLinks
+
   return (
-    <footer className="py-12 bg-black border-t border-cyan-900/30">
+    <footer className="border-t border-[color:var(--prof-border)] bg-[var(--prof-bg-base)] py-12">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Brand Section */}
@@ -19,8 +51,10 @@ export default function Footer() {
                 Profynus
               </span>
             </div>
-            <p className="text-gray-400 mb-4">
-              Your ultimate music companion. Download, listen, and create amazing playlists.
+            <p className="mb-4 text-[var(--prof-text-muted)]">
+              {isApp
+                ? "A focused workspace for streaming, discovery, competition tracking, and social music activity."
+                : "Your ultimate music companion. Download, listen, and create amazing playlists."}
             </p>
             <div className="flex space-x-4">
               <SocialIcon icon={<Twitter size={18} />} />
@@ -33,45 +67,60 @@ export default function Footer() {
           <div>
             <h3 className="text-white font-bold mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              <FooterLink href="#features">Features</FooterLink>
-              <FooterLink href="#how-it-works">How It Works</FooterLink>
-              <FooterLink href="#showcase">Music</FooterLink>
-              <FooterLink href="#download">Download</FooterLink>
+              {quickLinks.map((item) => (
+                <FooterLink key={item.label} href={item.href}>{item.label}</FooterLink>
+              ))}
             </ul>
           </div>
           
           {/* Support Links */}
           <div>
-            <h3 className="text-white font-bold mb-4">Support</h3>
+            <h3 className="text-white font-bold mb-4">{isApp ? "Workspace" : "Support"}</h3>
             <ul className="space-y-2">
-              <FooterLink href="#">Help Center</FooterLink>
-              <FooterLink href="#">Contact Us</FooterLink>
-              <FooterLink href="#">FAQs</FooterLink>
-              <FooterLink href="#">Privacy Policy</FooterLink>
+              {supportLinks.map((item) => (
+                <FooterLink key={item.label} href={item.href}>{item.label}</FooterLink>
+              ))}
             </ul>
           </div>
           
-          {/* Newsletter */}
+          {/* CTA */}
           <div>
-            <h3 className="text-white font-bold mb-4">Newsletter</h3>
-            <p className="text-gray-400 mb-4">
-              Subscribe to get updates on new features and music releases.
-            </p>
-            <div className="flex">
-              <input 
-                type="email" 
-                placeholder="Your email" 
-                className="bg-gray-900 text-white px-4 py-2 rounded-l-md w-full focus:outline-none focus:ring-1 focus:ring-cyan-500"
-              />
-              <button className="bg-cyan-500 text-black px-4 py-2 rounded-r-md hover:bg-cyan-400 transition-colors">
-                <ChevronRight size={18} />
-              </button>
-            </div>
+            <h3 className="text-white font-bold mb-4">{isApp ? "Next Action" : "Newsletter"}</h3>
+            {isApp ? (
+              <div className="rounded-3xl border border-[color:var(--prof-border)] bg-[var(--prof-bg-panel)] p-5">
+                <p className="mb-4 text-sm leading-6 text-[var(--prof-text-muted)]">
+                  Jump back into discovery, review your social activity, or continue shaping your profile.
+                </p>
+                <Link
+                  to="/feed"
+                  className="inline-flex items-center gap-2 rounded-full border border-cyan-300/30 bg-cyan-400 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-cyan-300"
+                >
+                  Open feed
+                  <ChevronRight size={18} />
+                </Link>
+              </div>
+            ) : (
+              <>
+                <p className="mb-4 text-[var(--prof-text-muted)]">
+                  Subscribe to get updates on new features and music releases.
+                </p>
+                <div className="flex">
+                  <input 
+                    type="email" 
+                    placeholder="Your email" 
+                    className="w-full rounded-l-md border border-[color:var(--prof-border)] bg-[var(--prof-bg-panel)] px-4 py-2 text-white focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                  />
+                  <button className="rounded-r-md bg-cyan-500 px-4 py-2 text-black transition-colors hover:bg-cyan-400">
+                    <ChevronRight size={18} />
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
         
         {/* Copyright */}
-        <div className="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
+        <div className="border-t border-[color:var(--prof-border)] pt-8 text-center text-sm text-[var(--prof-text-muted)]">
           <p>© {new Date().getFullYear()} Profynus. All rights reserved.</p>
         </div>
       </div>
@@ -83,7 +132,7 @@ function SocialIcon({ icon }) {
   return (
     <motion.a 
       href="#" 
-      className="bg-cyan-900/30 p-2 rounded-full text-cyan-400 hover:bg-cyan-500 hover:text-black transition-colors"
+      className="rounded-full bg-[var(--prof-bg-chip)] p-2 text-cyan-400 transition-colors hover:bg-cyan-500 hover:text-black"
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
     >
@@ -97,7 +146,7 @@ function FooterLink({ href, children }) {
     <li>
       <Link 
         to={href} 
-        className="text-gray-400 hover:text-cyan-400 transition-colors"
+        className="text-[var(--prof-text-muted)] transition-colors hover:text-cyan-400"
       >
         {children}
       </Link>

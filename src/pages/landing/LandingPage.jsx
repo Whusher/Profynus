@@ -39,7 +39,7 @@ export default function LandingPage() {
       <MusicShowcaseSection />
       <StatsSection />
       <DownloadSection onNavigate={handleNavigation} />
-      <Footer />
+      <Footer variant="landing" />
     </div>
   )
 }

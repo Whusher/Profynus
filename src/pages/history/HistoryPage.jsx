@@ -39,7 +39,7 @@ function HistoryContent() {
       <TemplateCard title="Behavioral snapshots" description="High-level signals help the user understand how they consume the platform over time.">
         <div className="grid gap-3 md:grid-cols-3">
           {snapshots.map((item) => (
-            <div key={item.title} className="rounded-2xl border border-white/6 bg-white/[0.03] p-4">
+            <div key={item.title} className="rounded-2xl border border-cyan-950/70 bg-slate-950/80 p-4">
               <p className="text-sm font-medium text-white">{item.title}</p>
               <p className="mt-2 text-sm leading-6 text-slate-400">{item.description}</p>
             </div>

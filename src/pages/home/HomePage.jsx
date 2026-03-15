@@ -35,7 +35,7 @@ function Home() {
         >
           <div className="grid gap-4 md:grid-cols-2">
             {overviewCards.map((card) => (
-              <div key={card.title} className="rounded-2xl border border-white/6 bg-white/[0.03] p-4">
+              <div key={card.title} className="rounded-2xl border border-cyan-950/70 bg-slate-950/80 p-4">
                 <div className="mb-4 inline-flex rounded-2xl border border-cyan-400/20 bg-cyan-400/10 p-3 text-cyan-300">
                   <card.icon size={20} />
                 </div>
@@ -55,7 +55,7 @@ function Home() {
               <Link
                 key={item.title}
                 to={item.href}
-                className="flex items-center justify-between rounded-2xl border border-white/6 bg-white/[0.03] px-4 py-3 transition hover:border-cyan-300/30 hover:bg-cyan-400/5"
+                className="flex items-center justify-between rounded-2xl border border-cyan-950/70 bg-slate-950/80 px-4 py-3 transition hover:border-cyan-700/35 hover:bg-cyan-950/25"
               >
                 <div>
                   <p className="text-sm font-medium text-white">{item.title}</p>
@@ -84,7 +84,7 @@ function HomeAside() {
       <TemplateCard title="Leaderboard watch" description="The weekly competition resets every Monday and rewards engagement across the public feed.">
         <div className="space-y-4">
           {leaderboard.map((entry, index) => (
-            <div key={entry.name} className="flex items-center justify-between rounded-2xl border border-white/6 bg-white/[0.03] px-4 py-3">
+            <div key={entry.name} className="flex items-center justify-between rounded-2xl border border-cyan-950/70 bg-slate-950/80 px-4 py-3">
               <div className="flex items-center gap-3">
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-cyan-400/10 text-sm font-semibold text-cyan-300">
                   0{index + 1}

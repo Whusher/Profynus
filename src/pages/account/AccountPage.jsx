@@ -43,7 +43,7 @@ function AccountContent() {
       <TemplateCard title="Creator profile presentation" description="A polished account page should help artists convert profile visits into streams, follows, and playlist saves.">
         <div className="grid gap-3 md:grid-cols-3">
           {creatorPanels.map((item) => (
-            <div key={item.title} className="rounded-2xl border border-white/6 bg-white/[0.03] p-4">
+            <div key={item.title} className="rounded-2xl border border-cyan-950/70 bg-slate-950/80 p-4">
               <p className="text-sm font-medium text-white">{item.title}</p>
               <p className="mt-2 text-sm leading-6 text-slate-400">{item.description}</p>
             </div>
