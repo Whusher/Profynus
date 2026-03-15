@@ -10,3 +10,4 @@
 export { default as useAuthStore } from './auth/AuthStore';
 export { default as useUIStore }   from './ui/UIStore';
 export { default as useUserStore } from './user/UserStore';
+export { default as usePlayerStore } from './player/PlayerStore';

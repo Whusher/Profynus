@@ -18,6 +18,7 @@ const FriendsPage = lazy(() => import('@pages/friends/FriendsPage'))
 const AccountPage = lazy(() => import('@pages/account/AccountPage'))
 const HistoryPage = lazy(() => import('@pages/history/HistoryPage'))
 const MusicPlayerPage = lazy(() => import('@pages/music-player/MusicPlayerPage'))
+const FloatingMusicPlayer = lazy(() => import('@components/music/FloatingMusicPlayer'))
 
 const renderLazyRoute = (element) => <Suspense fallback={<RouteLoader />}>{element}</Suspense>
 
@@ -38,5 +39,8 @@ createRoot(document.getElementById('root')).render(
       <Route path='*' element={<Navigate to='/' replace />}/>
     </Routes>
     <Toaster position='top-center'/>
+    <Suspense fallback={null}>
+      <FloatingMusicPlayer />
+    </Suspense>
   </BrowserRouter>
 )

@@ -5,12 +5,16 @@ import AppPageTemplate, {
 } from "@components/layout/AppPageTemplate"
 import MusicPlayerSample from "@components/music/MusicPlayerSample"
 import SEO from "@/services/SEO"
+import { usePlayerStore } from "@store/index"
 
 export default function MusicPlayerPage() {
   return <Layout><MusicPlayerContent /></Layout>
 }
 
 function MusicPlayerContent() {
+  const openPlayer = usePlayerStore((state) => state.openPlayer)
+  const openModal = usePlayerStore((state) => state.openModal)
+
   return (
     <AppPageTemplate
       eyebrow="Music Player"
@@ -32,6 +36,21 @@ function MusicPlayerContent() {
         title="Player sample"
         description="Includes play/pause, seek, skip, loop, volume, download, and 3D audio-reactive scene."
       >
+        <div className="mb-5 flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={() => {
+              openPlayer(0)
+              openModal()
+            }}
+            className="inline-flex items-center gap-2 rounded-full border border-cyan-300/30 bg-cyan-400 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-cyan-300"
+          >
+            Launch persistent mini player
+          </button>
+          <p className="text-sm text-[var(--prof-text-muted)]">
+            Open the floating player, minimize it, and keep browsing while audio continues.
+          </p>
+        </div>
         <MusicPlayerSample />
       </TemplateCard>
       <SEO
