@@ -4,6 +4,7 @@ import AppPageTemplate, {
   TemplateList,
 } from "@components/layout/AppPageTemplate"
 import MusicPlayerSample from "@components/music/MusicPlayerSample"
+import SEO from "@/services/SEO"
 
 export default function MusicPlayerPage() {
   return <Layout><MusicPlayerContent /></Layout>
@@ -33,6 +34,11 @@ function MusicPlayerContent() {
       >
         <MusicPlayerSample />
       </TemplateCard>
+      <SEO
+        title={'Music Experience'}
+        image="/assets/logo-square-wp-8cYfY.png"
+        description="Music player available for everyone"
+      />
     </AppPageTemplate>
   )
 }
