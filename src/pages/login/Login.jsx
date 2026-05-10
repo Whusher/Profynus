@@ -17,11 +17,14 @@ import { Eye, EyeOff, Lock, Mail, AlertCircle, Loader2 } from "lucide-react"
 import { useNavigate } from "react-router"
 import { Link } from "react-router"
 import { sileo } from "sileo"
+import useAuthStore from "@/store/auth/AuthStore"
+import useUserStore from "@/store/user/UserStore"
 
 // Media Assets
 import ProfynusWolf from "@assets/icons/logo-square.png"
 import MusicParticles from "@/components/layout/MusicParticles"
 import Logo from "@/components/layout/Logo"
+import authService from "@/api/services/authService"
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -101,11 +104,43 @@ export default function LoginPage() {
         if (isValid) {
             setIsLoading(true)
             try {
-                sileo.success({ title: 'Welcome again' });
-                navigate('/home');
+
+                // Call API for login request 
+                // Depending on the issuer of the Auth request everything 
+                // most be handled include default for now.
+                const response = await authService.login(formData);
+                console.log(response);
+
+                if (response.success){
+                    localStorage.setItem("access_token", response.accessToken)
+                    const profile = await useUserStore.getState().fetchProfile()
+                    // // Mirror into auth store user object for convenience
+                    if (profile) {
+                        useAuthStore.getState().setUser({
+                            userId: profile.userId || profile.id || null,
+                            firstName: profile.firstName,
+                            lastName: profile.lastName,
+                            username: profile.username,
+                            email: profile.email,
+                            accountCreationDate: profile.accountCreationDate,
+                        })
+                    }
+                    navigate('/home');
+                }
+                else{
+                    sileo.error({
+                        title: "Login Failed",
+                        description: "Please check your credentials and try again.",
+                    });
+                    return;
+                }
             } catch (error) {
                 console.log(error);
-                setLoginError("An error occurred. Please try again.")
+                sileo.error({
+                    description: error.userMessage ?? "Please try again.",
+                    position: 'top-center'
+                });
+                // setLoginError("An error occurred. Please try again.")
             } finally {
                 setIsLoading(false)
             }

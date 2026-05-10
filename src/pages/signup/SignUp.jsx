@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion, useAnimateMini } from "framer-motion"
 import { Eye, EyeOff, Check, AlertCircle, Lock, User, Mail, UserCircle } from "lucide-react"
 
@@ -13,6 +13,11 @@ import { sileo } from "sileo"
 
 import { Link } from "react-router"
 import { useNavigate } from "react-router"
+import debounce from "@/utils/debounce"
+import userService from "@/api/services/userService"
+import authService from "@/api/services/authService"
+import useUserStore from '@/store/user/UserStore'
+import useAuthStore from '@/store/auth/AuthStore'
 
 export default function SignUp() {
     const navigation = useNavigate();
@@ -40,6 +45,9 @@ export default function SignUp() {
     const [passwordStrength, setPasswordStrength] = useState(0)
     const [formSubmitted, setFormSubmitted] = useState(false)
     const [formValid, setFormValid] = useState(false)
+    const [usernameAvailable, setUsernameAvailable] = useState(null)
+    const [usernameChecking, setUsernameChecking] = useState(false)
+    const debouncedValidateRef = useRef(null)
 
     // Handle input changes
     const handleChange = (e) => {
@@ -61,7 +69,45 @@ export default function SignUp() {
         if (name === "password") {
             calculatePasswordStrength(value)
         }
+
+        // Trigger username validation (debounced)
+        if (name === "username") {
+            // initialize debounced validator once
+            if (!debouncedValidateRef.current) {
+                debouncedValidateRef.current = debounce(async (val) => {
+                    // skip short values
+                    if (!val || val.trim().length < 3) {
+                        setUsernameAvailable(null)
+                        setUsernameChecking(false)
+                        return
+                    }
+
+                    setUsernameChecking(true)
+                    try {
+                        const res = await userService.validateUsername(val)
+                        // The API returns { username, validUsername, availableUsername }
+                        setUsernameAvailable(!!res.availableUsername)
+                        setErrors((prev) => ({
+                            ...prev,
+                            username: res.availableUsername ? "" : "Username is already taken",
+                        }))
+                    } catch (err) {
+                        console.error("username validation error", err)
+                    } finally {
+                        setUsernameChecking(false)
+                    }
+                }, 500)
+            }
+
+            debouncedValidateRef.current(value)
+        }
     }
+
+    useEffect(() => {
+        return () => {
+            if (debouncedValidateRef.current && debouncedValidateRef.current.cancel) debouncedValidateRef.current.cancel()
+        }
+    }, [])
 
     // Calculate password strength
     const calculatePasswordStrength = (password) => {
@@ -139,17 +185,62 @@ export default function SignUp() {
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault()
+        if (formSubmitted) return
         setFormSubmitted(true)
 
         const isValid = validateForm()
-        if (isValid) {
-
-            setFormValid(true);
-            
-            
-
-        } else {
+        if (!isValid) {
             setFormValid(false)
+            setFormSubmitted(false)
+            return
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 2000))
+
+        try {
+            const response = await authService.register(formData);
+            if (response.success) {
+                // Set the access token
+                localStorage.setItem("access_token", response.accessToken);
+
+                // Fetch user profile and store in state
+                try {
+                    const profile = await useUserStore.getState().fetchProfile()
+                    
+                    // // Mirror into auth store user object for convenience
+                    if (profile) {
+                        useAuthStore.getState().setUser({
+                            userId: profile.userId || profile.id || null,
+                            firstName: profile.firstName,
+                            lastName: profile.lastName,
+                            username: profile.username,
+                            email: profile.email,
+                            accountCreationDate: profile.accountCreationDate,
+                        })
+                    }
+                } catch (pfErr) {
+                    console.error('failed to fetch profile after register', pfErr)
+                }
+                // Redirect to main page
+                setFormValid(true);
+                navigation('/home')
+            } else {
+                // Show error
+                sileo.error({
+                    title: "Registration failed",
+                    description: "Please check your details and try again.",
+                });
+            }
+        } catch (e) {
+            sileo.error({
+                fill: "#171D1F",
+                description: e.userMessage ?? "Please try again.",
+                position: 'top-right'
+            });
+            console.log(e)
+        }
+        finally {
+            setFormSubmitted(false);
         }
     }
 
@@ -291,6 +382,13 @@ export default function SignUp() {
                                     >
                                         <AlertCircle className="h-3 w-3 mr-1" /> {errors.username}
                                     </motion.p>
+                                )}
+                                {!errors.username && (
+                                    <div className="mt-1 text-xs">
+                                        {usernameChecking && <p className="text-gray-300">Checking username...</p>}
+                                        {usernameAvailable === true && <p className="text-emerald-400">Username available</p>}
+                                        {usernameAvailable === false && <p className="text-red-400">Username taken</p>}
+                                    </div>
                                 )}
                             </motion.div>
 
@@ -458,11 +556,19 @@ export default function SignUp() {
                             >
                                 <motion.button
                                     type="submit"
-                                    className="py-2.5 px-5 w-full rounded-lg bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-black font-bold shadow-lg shadow-cyan-900/30 transition-all"
+                                    disabled={formSubmitted}
+                                    className={`py-2.5 px-5 w-full rounded-lg bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-black font-bold shadow-lg shadow-cyan-900/30 transition-all ${formSubmitted ? 'cursor-not-allowed opacity-80' : ''}`}
                                     whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.98 }}
+                                    whileTap={formSubmitted ? undefined : { scale: 0.98 }}
                                 >
-                                    Create Account
+                                    {formSubmitted ? (
+                                        <span className="flex items-center justify-center gap-2">
+                                            <span className="h-4 w-4 rounded-full border-2 border-black/30 border-t-black animate-spin" />
+                                            Creating account...
+                                        </span>
+                                    ) : (
+                                        "Create Account"
+                                    )}
                                 </motion.button>
                             </motion.div>
                         </div>

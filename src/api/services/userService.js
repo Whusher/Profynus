@@ -25,7 +25,23 @@ const userService = {
     });
   },
 
+  /**
+   *  Validate username from cache services
+   * @param {*} username 
+   * @returns 
+   */
+  validateUsername: (username) => api.get(ENDPOINTS.user.validateUserName(username)),
+
+  /**
+   * 
+   * Get user basic information to store in state
+   * 
+   * @param {*} id 
+   * @returns 
+   */
   getUserById: (id) => api.get(ENDPOINTS.user.byId(id)),
+
+
 };
 
 export default userService;

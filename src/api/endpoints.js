@@ -16,11 +16,12 @@ const ENDPOINTS = {
   },
 
   user: {
-    me: '/users/me',
-    updateProfile: '/users/me',
-    changePassword: '/users/me/password',
-    avatar: '/users/me/avatar',
-    byId: (id) => `/users/${id}`,
+    me: '/user/me',
+    updateProfile: '/user/me',
+    changePassword: '/user/me/password',
+    avatar: '/user/me/avatar',
+    byId: (id) => `/user/${id}`,
+    validateUserName: (us) =>  `/user/validateUsername/${encodeURI(us)}`
   },
 
   // Example: future modules

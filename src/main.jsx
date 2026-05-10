@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router'
 
 // External dependencies
 import { Toaster } from 'sileo'
+import ProtectedRoute from '@components/layout/ProtectedRoute'
 import RouteLoader from '@components/layout/RouteLoader'
 
 
@@ -30,15 +31,15 @@ createRoot(document.getElementById('root')).render(
       <Route path='/login' element={renderLazyRoute(<LoginPage/>)} />
       <Route path='/signup' element={renderLazyRoute(<SignUpPage/>)} />
       {/* Private paths */}
-      <Route path='/home' element={renderLazyRoute(<HomePage/>)} />
-      <Route path='/feed' element={renderLazyRoute(<FeedPage/>)} />
-      <Route path='/friends' element={renderLazyRoute(<FriendsPage/>)} />
-      <Route path='/profile' element={renderLazyRoute(<AccountPage/>)} />
-      <Route path='/history' element={renderLazyRoute(<HistoryPage/>)} />
-      <Route path='/moremusic' element={renderLazyRoute(<MusicPlayerPage/>)} />
+      <Route path='/home' element={renderLazyRoute(<ProtectedRoute><HomePage/></ProtectedRoute>)} />
+      <Route path='/feed' element={renderLazyRoute(<ProtectedRoute><FeedPage/></ProtectedRoute>)} />
+      <Route path='/friends' element={renderLazyRoute(<ProtectedRoute><FriendsPage/></ProtectedRoute>)} />
+      <Route path='/profile' element={renderLazyRoute(<ProtectedRoute><AccountPage/></ProtectedRoute>)} />
+      <Route path='/history' element={renderLazyRoute(<ProtectedRoute><HistoryPage/></ProtectedRoute>)} />
+      <Route path='/moremusic' element={renderLazyRoute(<ProtectedRoute><MusicPlayerPage/></ProtectedRoute>)} />
       <Route path='*' element={<Navigate to='/' replace />}/>
     </Routes>
-    <Toaster position='top-center'/>
+    <Toaster position='top-center' options={{fill: "#171D1F"}}/>
     <Suspense fallback={null}>
       <FloatingMusicPlayer />
     </Suspense>

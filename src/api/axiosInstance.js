@@ -18,6 +18,7 @@ if (!BASE_URL) {
 const api = axios.create({
   baseURL: BASE_URL,
   timeout: TIMEOUT,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
@@ -53,12 +54,15 @@ api.interceptors.response.use(
     const originalRequest = error.config;
 
     // --- Token Refresh Logic (401) ---
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry && 
+      !originalRequest.url?.includes('/auth/')
+    ) {
       originalRequest._retry = true;
 
       try {
-        const refreshToken = localStorage.getItem('refresh_token');
-        const { data } = await axios.post(`${BASE_URL}/auth/refresh`, { refreshToken });
+        const { data } = await axios.post(`${BASE_URL}/auth/refresh`, {}, { withCredentials: true });
 
         localStorage.setItem('access_token', data.accessToken);
         originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
@@ -76,6 +80,7 @@ api.interceptors.response.use(
     const normalizedError = {
       status: error.response?.status ?? 0,
       message: error.response?.data?.message ?? error.message ?? 'Unexpected error',
+      userMessage: error.response?.data?.detail ?? 'Please try again later',
       data: error.response?.data ?? null,
       originalError: error,
     };

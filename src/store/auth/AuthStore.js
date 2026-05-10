@@ -97,7 +97,7 @@ const useAuthStore = create(
          * @param {Partial<User>} updatedFields
          */
         setUser: (updatedFields) =>
-          set((state) => ({ user: { ...state.user, ...updatedFields } })),
+          set((state) => ({ user: { ...state.user, ...updatedFields }, isAuthenticated: true })),
 
         clearError: () => set({ error: null }),
       }),
