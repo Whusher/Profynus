@@ -29,6 +29,7 @@ const landingSupportLinks = [
 
 const appSupportLinks = [
   { label: "Account", href: "/profile" },
+  { label: "Settings", href: "/settings" },
   { label: "Music Player", href: "/moremusic" },
   { label: "Landing", href: "/" },
   { label: "Sign out flow", href: "/login" },
@@ -40,18 +41,18 @@ export default function Footer({ variant = "landing" }) {
   const supportLinks = isApp ? appSupportLinks : landingSupportLinks
 
   return (
-    <footer className="border-t border-[color:var(--prof-border)] bg-[var(--prof-bg-base)] py-12">
-      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:max-w-[88rem] lg:px-8 2xl:max-w-[96rem] 2xl:px-10">
+    <footer className="border-t border-(--prof-border) bg-(--prof-bg-base) py-12">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:max-w-352 lg:px-8 2xl:max-w-384 2xl:px-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Brand Section */}
           <div>
             <div className="flex items-center mb-4">
               <Logo size={48} />
-              <span className="text-xl font-bold ml-2 bg-linear-to-r from-cyan-400 to-cyan-200 text-transparent bg-clip-text" style={{ fontFamily: 'Audiowide, sans-serif' }}>
+              <span className="text-xl font-bold ml-2 bg-linear-to-r from-(--prof-accent-strong) to-(--prof-accent) text-transparent bg-clip-text" style={{ fontFamily: 'Audiowide, sans-serif' }}>
                 Profynus
               </span>
             </div>
-            <p className="mb-4 text-[var(--prof-text-muted)]">
+            <p className="mb-4 text-(--prof-text-muted)">
               {isApp
                 ? "A focused workspace for streaming, discovery, competition tracking, and social music activity."
                 : "Your ultimate music companion. Download, listen, and create amazing playlists."}
@@ -87,13 +88,13 @@ export default function Footer({ variant = "landing" }) {
           <div>
             <h3 className="text-white font-bold mb-4">{isApp ? "Next Action" : "Newsletter"}</h3>
             {isApp ? (
-              <div className="rounded-3xl border border-[color:var(--prof-border)] bg-[var(--prof-bg-panel)] p-5">
-                <p className="mb-4 text-sm leading-6 text-[var(--prof-text-muted)]">
+              <div className="rounded-3xl border-(--prof-border) bg-(--prof-bg-panel) p-5">
+                <p className="mb-4 text-sm leading-6 text-(--prof-text-muted)">
                   Jump back into discovery, review your social activity, or continue shaping your profile.
                 </p>
                 <Link
                   to="/feed"
-                  className="inline-flex items-center gap-2 rounded-full border border-cyan-300/30 bg-cyan-400 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-cyan-300"
+                  className="inline-flex items-center gap-2 rounded-full border-(--prof-border-strong) bg-(--prof-accent) px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-(--prof-accent-strong)"
                 >
                   Open feed
                   <ChevronRight size={18} />
@@ -101,16 +102,16 @@ export default function Footer({ variant = "landing" }) {
               </div>
             ) : (
               <>
-                <p className="mb-4 text-[var(--prof-text-muted)]">
+                <p className="mb-4 text-(--prof-text-muted)">
                   Subscribe to get updates on new features and music releases.
                 </p>
                 <div className="flex">
                   <input 
                     type="email" 
                     placeholder="Your email" 
-                    className="w-full rounded-l-md border border-[color:var(--prof-border)] bg-[var(--prof-bg-panel)] px-4 py-2 text-white focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                    className="w-full rounded-l-md border-(--prof-border) bg-(--prof-bg-panel) px-4 py-2 text-white focus:outline-none focus:ring-1 focus:ring-(--prof-accent)"
                   />
-                  <button className="rounded-r-md bg-cyan-500 px-4 py-2 text-black transition-colors hover:bg-cyan-400">
+                  <button className="rounded-r-md bg-(--prof-accent) px-4 py-2 text-black transition-colors hover:bg-(--prof-accent-strong)">
                     <ChevronRight size={18} />
                   </button>
                 </div>
@@ -120,7 +121,7 @@ export default function Footer({ variant = "landing" }) {
         </div>
         
         {/* Copyright */}
-        <div className="border-t border-[color:var(--prof-border)] pt-8 text-center text-sm text-[var(--prof-text-muted)]">
+        <div className="border-t border-(--prof-border) pt-8 text-center text-sm text-(--prof-text-muted)">
           <p>© {new Date().getFullYear()} Profynus. All rights reserved.</p>
         </div>
       </div>
@@ -132,7 +133,7 @@ function SocialIcon({ icon }) {
   return (
     <motion.a 
       href="#" 
-      className="rounded-full bg-[var(--prof-bg-chip)] p-2 text-cyan-400 transition-colors hover:bg-cyan-500 hover:text-black"
+      className="rounded-full bg-(--prof-bg-chip) p-2 text-(--prof-accent) transition-colors hover:bg-(--prof-accent) hover:text-black"
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
     >
@@ -146,7 +147,7 @@ function FooterLink({ href, children }) {
     <li>
       <Link 
         to={href} 
-        className="text-[var(--prof-text-muted)] transition-colors hover:text-cyan-400"
+        className="text-(--prof-text-muted) transition-colors hover:text-(--prof-accent)"
       >
         {children}
       </Link>

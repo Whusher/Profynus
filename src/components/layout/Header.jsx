@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { Link, NavLink, useNavigate } from "react-router"
-import { Bell, Clock3, LogOut, Menu, Sparkles, UserRound, X } from "lucide-react"
+import { Bell, Clock3, LogOut, Menu, Settings2, Sparkles, UserRound, X } from "lucide-react"
 import { useAuthStore } from "@store/index"
 import Logo from "./Logo"
 
@@ -131,44 +131,49 @@ export default function Header() {
           isHeaderVisible ? "translate-y-0" : "-translate-y-full",
         ].join(" ")}
       >
-        <div className="mx-auto flex w-full max-w-7xl flex-col px-4 sm:px-6 lg:max-w-[88rem] lg:px-8 2xl:max-w-[96rem] 2xl:px-10">
+        <div className="mx-auto flex w-full max-w-7xl flex-col px-4 sm:px-6 lg:max-w-352 lg:px-8 2xl:max-w-384 2xl:px-10">
           <div className="flex min-h-20 items-center justify-between gap-3 py-3">
           <div className="flex min-w-0 items-center gap-3">
             <Link
               to="/home"
-              className="group flex items-center gap-3 rounded-full border border-(--prof-border) bg-linear-to-r from-(--prof-bg-chip) via-(--prof-bg-base) to-(--prof-bg-base) px-2 py-2 pr-4 shadow-[0_10px_30px_var(--prof-shadow-soft)] transition hover:border-(--prof-border-strong) hover:from-(--prof-bg-chip-hover) hover:via-(--prof-bg-elevated)"
+              className="group flex items-center gap-3 rounded-full border border-(--prof-border) bg-linear-to-r from-(--prof-bg-chip) via-(--prof-bg-base) to-(--prof-bg-base) px-2 py-2 pr-4 shadow-[0_10px_30px_var(--prof-theme-halo-1)] transition hover:border-(--prof-border-strong) "
             >
               <Logo size={42} />
               <div className="min-w-0">
                 <p style={{ fontFamily: 'Audiowide, sans-serif' }} 
-                  className="truncate text-sm uppercase tracking-[0.32em] text-cyan-200 transition group-hover:text-cyan-100">Profynus</p>
+                  className="truncate text-sm uppercase tracking-[0.32em] text-(--prof-accent-strong) transition ">Profynus</p>
                 <p className="truncate text-xs text-slate-400">Music platform workspace</p>
               </div>
             </Link>
 
-            <div className="hidden items-center gap-2 rounded-full border border-[color:var(--prof-border)] bg-[var(--prof-bg-chip)] px-3 py-2 text-xs uppercase tracking-[0.22em] text-cyan-100/80 2xl:flex">
-              <Sparkles size={14} className="text-cyan-300" />
-              Weekly competition live
-            </div>
           </div>
 
           <div className="hidden items-center gap-3 lg:flex">
-            <div className="hidden items-center gap-2 rounded-full border border-[color:var(--prof-border)] bg-linear-to-r from-[var(--prof-bg-chip)] to-[var(--prof-bg-base)] px-3 py-2 text-sm text-slate-300 xl:flex">
-              <Clock3 size={16} className="text-cyan-300" />
-              <span className="font-mono text-cyan-200">{formattedTime}</span>
+            <div className="hidden items-center gap-2 rounded-full border-(--prof-border) bg-linear-to-r from-(--prof-bg-chip) to-(--prof-bg-base) px-3 py-2 text-sm text-slate-300 xl:flex">
+              <Clock3 size={16} className="text-(--prof-accent)" />
+              <span className="font-mono text-(--prof-accent-strong)">{formattedTime}</span>
             </div>
 
             <button
               type="button"
+              onClick={() => navigate("/settings")}
+              className="hidden h-11 w-11 items-center justify-center rounded-full border-(--prof-border) bg-(--prof-bg-panel) text-slate-300 transition hover:border-(--prof-border-strong) hover:bg-(--prof-bg-chip) hover:text-(--prof-accent) lg:flex"
+              aria-label="Open settings"
+            >
+              <Settings2 size={18} />
+            </button>
+
+            <button
+              type="button"
               onClick={() => navigate("/profile")}
-              className="hidden h-11 w-11 items-center justify-center rounded-full border border-[color:var(--prof-border)] bg-[var(--prof-bg-panel)] text-slate-300 transition hover:border-[color:var(--prof-border-strong)] hover:bg-[var(--prof-bg-chip)] hover:text-cyan-200 xl:flex"
+              className="hidden h-11 w-11 items-center justify-center rounded-full border-(--prof-border) bg-(--prof-bg-panel) text-slate-300 transition hover:border-(--prof-border-strong) hover:text-(--prof-accent) lg:flex"
               aria-label="Open account"
             >
               <Bell size={18} />
             </button>
 
-            <div className="flex items-center gap-3 rounded-full border border-[color:var(--prof-border)] bg-linear-to-r from-[var(--prof-bg-chip)] via-[var(--prof-bg-base)] to-[var(--prof-bg-elevated)] px-3 py-2 shadow-[0_12px_26px_var(--prof-shadow-soft)]">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-linear-to-br from-cyan-200 to-cyan-400 text-sm font-semibold text-slate-950">
+            <div className="flex items-center gap-3 rounded-full border-(--prof-border) px-3 py-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-linear-to-br from-(--prof-accent-strong) to-(--prof-accent) text-sm font-semibold text-slate-950">
                 {avatarLabel}
               </div>
               <div className="max-w-48 min-w-0">
@@ -180,7 +185,7 @@ export default function Header() {
             <button
               type="button"
               onClick={handleLogout}
-              className="inline-flex items-center gap-2 rounded-full border border-[color:var(--prof-danger-border)] bg-linear-to-r from-[var(--prof-danger-bg)] to-[var(--prof-bg-base)] px-4 py-2 text-sm font-medium text-red-100 transition hover:border-red-700/50 hover:from-red-900/80 hover:to-[var(--prof-bg-elevated)]"
+              className="inline-flex items-center gap-2 rounded-full border-(--prof-danger-border) bg-linear-to-r from-(--prof-danger-bg) to-(--prof-bg-base) px-4 py-2 text-sm font-medium text-red-100 transition hover:border-red-700/50 hover:from-red-900/80 hover:to-(--prof-bg-elevated)"
             >
               <LogOut size={16} />
               Logout
@@ -189,7 +194,7 @@ export default function Header() {
 
           <button
             type="button"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--prof-border)] bg-[var(--prof-bg-panel)] text-cyan-300 transition hover:border-[color:var(--prof-border-strong)] hover:bg-[var(--prof-bg-chip)] lg:hidden"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border-(--prof-border) bg-(--prof-bg-panel) text-(--prof-accent) transition hover:border-(--prof-border-strong) lg:hidden"
             onClick={() => {
               setIsMenuOpen((open) => !open)
               setIsHeaderVisible(true)
@@ -200,9 +205,9 @@ export default function Header() {
           </button>
         </div>
 
-          <div className="hidden border-t border-[color:var(--prof-border)] py-3 lg:flex lg:justify-center">
+          <div className="hidden border-t border-(--prof-border) py-3 lg:flex lg:justify-center">
             <nav className="w-full overflow-x-auto">
-              <div className="mx-auto flex w-max items-center gap-2 rounded-full border border-[color:var(--prof-border)] bg-linear-to-r from-[var(--prof-bg-base)] via-[var(--prof-bg-elevated)] to-[var(--prof-bg-base)] p-2 shadow-[0_18px_50px_var(--prof-shadow-strong)] ring-1 ring-[color:var(--prof-border)]">
+              <div className="mx-auto flex w-max items-center gap-2 rounded-full border-(--prof-border) bg-linear-to-r from-(--prof-bg-base) via-(--prof-bg-elevated) to-(--prof-bg-base) p-2 shadow-[0_18px_50px_var(--prof-shadow-strong)] ring-1 ring-(--prof-border)">
                 {navigationItems.map((item) => (
                   <DesktopNavLink key={item.href} {...item} />
                 ))}
@@ -211,25 +216,68 @@ export default function Header() {
           </div>
 
           {isMenuOpen ? (
-            <div className="border-t border-[color:var(--prof-border)] py-4 lg:hidden">
-              <div className="space-y-4 rounded-[28px] border border-[color:var(--prof-border)] bg-[var(--prof-bg-elevated-strong)] p-4 shadow-[0_20px_60px_var(--prof-shadow-strong)]">
-                <div className="flex items-center gap-3 rounded-2xl border border-[color:var(--prof-border)] bg-[var(--prof-bg-chip)] p-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-cyan-400 text-sm font-semibold text-slate-950">
+            <div className="border-t border-(--prof-border) py-4 lg:hidden">
+              <div className="space-y-4 rounded-[28px] border-(--prof-border) bg-(--prof-bg-elevated-strong) p-4 shadow-[0_20px_60px_var(--prof-shadow-strong)]">
+                <div className="flex items-center gap-3 rounded-2xl border-(--prof-border) bg-(--prof-bg-chip) p-3">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-(--prof-accent) text-sm font-semibold text-slate-950">
                     {avatarLabel}
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-white">{displayName}</p>
                     <p className="truncate text-xs text-slate-400">{emailLabel}</p>
                   </div>
-                  <div className="inline-flex items-center gap-2 rounded-full border border-[color:var(--prof-border)] bg-[var(--prof-bg-panel)] px-3 py-2 text-xs uppercase tracking-[0.22em] text-slate-300">
-                    <Clock3 size={14} className="text-cyan-300" />
+                  <div className="inline-flex items-center gap-2 rounded-full border-(--prof-border) bg-(--prof-bg-panel) px-3 py-2 text-xs uppercase tracking-[0.22em] text-slate-300">
+                    <Clock3 size={14} className="text-(--prof-accent)" />
                     {formattedTime}
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border-(--prof-border) bg-(--prof-bg-panel) p-3">
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.28em] text-slate-400">Shortcuts</p>
+                      <p className="text-sm text-white">Open the controls you use most</p>
+                    </div>
+                    <Settings2 size={16} className="text-(--prof-accent)" />
+                  </div>
+
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {[
+                      { label: "Settings", icon: Settings2, href: "/settings" },
+                      { label: "Account", icon: Bell, href: "/profile" },
+                    ].map((shortcut) => (
+                      <button
+                        key={shortcut.label}
+                        type="button"
+                        onClick={() => {
+                          setIsMenuOpen(false)
+                          navigate(shortcut.href)
+                        }}
+                        className={[
+                          "flex items-center gap-3 rounded-2xl border px-3 py-3 text-left transition",
+                          "border-(--prof-border) bg-(--prof-bg-base) text-slate-300 hover:border-(--prof-border-strong) hover:text-white",
+                        ].join(" ")}
+                      >
+                        <shortcut.icon size={18} className="text-(--prof-accent)" />
+                        <span className="min-w-0 flex-1">
+                          <span className="block text-sm font-medium">{shortcut.label}</span>
+                          <span className="block truncate text-[11px] uppercase tracking-[0.18em] text-slate-400">Open now</span>
+                        </span>
+                        <span className="text-xs uppercase tracking-[0.22em] text-slate-500">Open</span>
+                      </button>
+                    ))}
                   </div>
                 </div>
 
                 <nav className="grid gap-2">
                   {navigationItems.map((item) => (
-                    <MobileNavLink key={item.href} {...item} onNavigate={() => setIsMenuOpen(false)} />
+                    <MobileNavLink
+                      key={item.href}
+                      {...item}
+                      onNavigate={() => {
+                        setIsMenuOpen(false)
+                      }}
+                    />
                   ))}
                 </nav>
 
@@ -238,17 +286,17 @@ export default function Header() {
                     type="button"
                     onClick={() => {
                       setIsMenuOpen(false)
-                      navigate("/profile")
+                      navigate("/settings")
                     }}
-                    className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[color:var(--prof-border)] bg-[var(--prof-bg-panel)] px-4 py-3 text-sm font-medium text-white transition hover:border-[color:var(--prof-border-strong)] hover:bg-[var(--prof-bg-chip)]"
+                    className="inline-flex items-center justify-center gap-2 rounded-2xl border-(--prof-border) bg-(--prof-bg-panel) px-4 py-3 text-sm font-medium text-white transition hover:border-(--prof-border-strong)"
                   >
-                    <UserRound size={16} />
-                    Account
+                    <Settings2 size={16} />
+                    Settings
                   </button>
                   <button
                     type="button"
                     onClick={handleLogout}
-                    className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[color:var(--prof-danger-border)] bg-[var(--prof-danger-bg)] px-4 py-3 text-sm font-medium text-red-100 transition hover:border-red-700/50 hover:bg-red-900/50"
+                    className="inline-flex items-center justify-center gap-2 rounded-2xl border-(--prof-danger-border) bg-(--prof-danger-bg) px-4 py-3 text-sm font-medium text-red-100 transition hover:border-red-700/50 hover:bg-red-900/50"
                   >
                     <LogOut size={16} />
                     Logout
@@ -271,8 +319,8 @@ function DesktopNavLink({ href, label }) {
         [
           "relative rounded-full px-5 py-2.5 text-sm font-medium tracking-wide transition-all duration-300",
           isActive
-            ? "bg-linear-to-r from-cyan-300 via-cyan-400 to-sky-300 text-slate-950 shadow-[0_12px_28px_rgba(34,211,238,0.32)]"
-            : "text-slate-300 hover:bg-[var(--prof-bg-chip)] hover:text-cyan-100",
+            ? "text-slate-300 bg-linear-to-r from-(--prof-accent-strong) to-(--prof-accent-soft) font-bold"
+            : "text-slate-300 hover:text-(--prof-accent-strong)",
         ].join(" ")
       }
     >
@@ -290,8 +338,8 @@ function MobileNavLink({ href, label, onNavigate }) {
         [
           "flex items-center justify-between rounded-2xl border px-4 py-3 text-sm font-medium transition-all duration-300",
           isActive
-            ? "border-cyan-300/30 bg-cyan-400/10 text-cyan-200"
-            : "border-[color:var(--prof-border)] bg-[var(--prof-bg-panel)] text-white hover:border-[color:var(--prof-border-strong)] hover:bg-[var(--prof-bg-chip)]",
+            ? "border-(--prof-border-strong) bg-(--prof-accent-soft) text-(--prof-accent-strong)"
+            : "border-(--prof-border) bg-(--prof-bg-panel) text-white hover:border-(--prof-border-strong) hover:bg-(--prof-bg-chip)",
         ].join(" ")
       }
     >

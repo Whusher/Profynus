@@ -15,6 +15,7 @@ import {
   Music,
 } from "lucide-react"
 import * as THREE from "three"
+import { useThemeStore } from "@store/index"
 
 const DEFAULT_TRACK = {
   title: "GOMD",
@@ -223,6 +224,23 @@ export default function MusicPlayerSample({ track = DEFAULT_TRACK }) {
     })
   }
 
+  // Read active theme CSS variables so the 3D canvas matches the UI theme
+  const theme = useThemeStore((s) => s.theme)
+  const [accent, setAccent] = useState("#22d3ee")
+  const [accentStrong, setAccentStrong] = useState("#0e7490")
+  const [bgColor, setBgColor] = useState("#000000")
+
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    const root = window.getComputedStyle(document.documentElement)
+    const a = root.getPropertyValue("--prof-accent").trim() || "#22d3ee"
+    const aStrong = root.getPropertyValue("--prof-accent").trim() || a
+    const bg = root.getPropertyValue("--prof-bg-base").trim() || "#000000"
+    setAccent(a)
+    setAccentStrong(aStrong)
+    setBgColor(bg)
+  }, [theme])
+
   const downloadTrack = async () => {
     try {
       const response = await fetch(trackUrl)
@@ -272,24 +290,24 @@ export default function MusicPlayerSample({ track = DEFAULT_TRACK }) {
       <div className="overflow-hidden rounded-[28px] border border-(--prof-border) bg-(--prof-bg-elevated-strong) shadow-[0_24px_60px_var(--prof-shadow-strong)]">
         <div className="relative h-95 w-full">
           <Canvas camera={{ position: [0, 4, 10], fov: 45 }}>
-            <color attach="background" args={["#000000"]} />
-            <fog attach="fog" args={["#000000", 8, 22]} />
+            <color attach="background" args={[bgColor]} />
+            <fog attach="fog" args={[bgColor, 8, 22]} />
             <ambientLight intensity={0.45} />
-            <pointLight position={[0, 6, 4]} color="#22d3ee" intensity={1.6} />
-            <pointLight position={[0, -5, -4]} color="#0891b2" intensity={0.4} />
-            <ReactiveWave analyserDataRef={analyserDataRef} isPlaying={isPlaying} />
-            <FrequencyRing analyserDataRef={analyserDataRef} isPlaying={isPlaying} />
-            <FloatingParticles isPlaying={isPlaying} />
+            <pointLight position={[0, 6, 4]} color={accent} intensity={1.6} />
+            <pointLight position={[0, -5, -4]} color={accentStrong} intensity={0.4} />
+            <ReactiveWave analyserDataRef={analyserDataRef} isPlaying={isPlaying} accent={accent} accentStrong={accentStrong} />
+            <FrequencyRing analyserDataRef={analyserDataRef} isPlaying={isPlaying} accent={accent} accentStrong={accentStrong} />
+            <FloatingParticles isPlaying={isPlaying} accent={accent} />
             <OrbitControls enablePan={false} enableZoom={false} autoRotate autoRotateSpeed={0.45} />
           </Canvas>
 
           <div className="pointer-events-none absolute inset-x-0 top-0 bg-linear-to-b from-black/85 via-black/30 to-transparent p-6">
             <div className="flex items-center gap-4">
-              <div className="flex h-16 w-16 items-center justify-center rounded-xl border border-cyan-900/70 bg-cyan-950/35">
-                <Music className="text-cyan-300" size={32} />
+              <div className="flex h-16 w-16 items-center justify-center rounded-xl border border-(--prof-theme-halo-1)">
+                <Music className="text-(--prof-accent)" size={32} />
               </div>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-cyan-300">Now playing</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-(--prof-accent)">Now playing</p>
                 <h2 className="text-2xl font-semibold text-white">{track.title}</h2>
                 <p className="text-sm text-slate-300">{track.artist}</p>
               </div>
@@ -298,7 +316,7 @@ export default function MusicPlayerSample({ track = DEFAULT_TRACK }) {
         </div>
       </div>
 
-      <div className="rounded-[28px] border border-(--prof-border) bg-(--prof-bg-elevated) p-5 shadow-[0_18px_50px_var(--prof-shadow-soft)]">
+      <div className="rounded-[28px] border border-(--prof-border) p-5">
         {error ? (
           <p className="mb-4 rounded-2xl border border-red-900/70 bg-red-950/40 px-4 py-3 text-sm text-red-200">{error}</p>
         ) : null}
@@ -323,7 +341,7 @@ export default function MusicPlayerSample({ track = DEFAULT_TRACK }) {
             <button
               type="button"
               onClick={toggleMute}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-(--prof-border) bg-(--prof-bg-panel) text-white transition hover:border-cyan-400/50 hover:text-cyan-300"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-(--prof-border) bg-(--prof-bg-panel) text-white transition hover:border-(--prof-accent) hover:text-(--prof-accent)"
             >
               {volumeIcon}
             </button>
@@ -341,8 +359,8 @@ export default function MusicPlayerSample({ track = DEFAULT_TRACK }) {
               onClick={toggleLoop}
               className={`inline-flex h-10 w-10 items-center justify-center rounded-full border text-white transition ${
                 isLooping
-                  ? "border-cyan-300/50 bg-cyan-950/50 text-cyan-300"
-                  : "border-(--prof-border) bg-(--prof-bg-panel) hover:border-cyan-400/50 hover:text-cyan-300"
+                  ? "border-(--prof-accent)/50 bg-cyan-950/50 text-(--prof-accent)"
+                  : "border-(--prof-border) bg-(--prof-bg-panel) hover:border-(--prof-accent) hover:text-(--prof-accent)"
               }`}
             >
               <Repeat size={18} />
@@ -353,7 +371,7 @@ export default function MusicPlayerSample({ track = DEFAULT_TRACK }) {
             <motion.button
               type="button"
               onClick={() => handleSkip(-10)}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full text-white transition hover:text-cyan-300"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full text-white transition hover:text-(--prof-accent)"
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.94 }}
             >
@@ -364,7 +382,7 @@ export default function MusicPlayerSample({ track = DEFAULT_TRACK }) {
               type="button"
               onClick={togglePlayback}
               disabled={isBusy}
-              className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-cyan-400 text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-70"
+              className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-(--prof-accent) text-slate-950 transition hover:bg-(--prof-accent-strong) disabled:cursor-not-allowed disabled:opacity-70"
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.94 }}
             >
@@ -380,7 +398,7 @@ export default function MusicPlayerSample({ track = DEFAULT_TRACK }) {
             <motion.button
               type="button"
               onClick={() => handleSkip(10)}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full text-white transition hover:text-cyan-300"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full text-white transition hover:text-(--prof-accent)"
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.94 }}
             >
@@ -391,7 +409,7 @@ export default function MusicPlayerSample({ track = DEFAULT_TRACK }) {
           <button
             type="button"
             onClick={downloadTrack}
-            className="inline-flex items-center gap-2 rounded-full border border-(--prof-border) bg-(--prof-bg-panel) px-4 py-2 text-sm text-white transition hover:border-cyan-400/50 hover:bg-cyan-950/30 hover:text-cyan-200"
+            className="inline-flex items-center gap-2 rounded-full border border-(--prof-border) bg-(--prof-theme-halo-1) px-4 py-2 text-sm text-white transition hover:bg-(--prof-accent)"
           >
             <Download size={17} />
             Download sample
@@ -402,9 +420,12 @@ export default function MusicPlayerSample({ track = DEFAULT_TRACK }) {
   )
 }
 
-function ReactiveWave({ analyserDataRef, isPlaying }) {
+function ReactiveWave({ analyserDataRef, isPlaying, accent: propAccent, accentStrong: propAccentStrong }) {
   const meshRef = useRef(null)
   const geometry = useMemo(() => new THREE.PlaneGeometry(14, 14, 58, 58), [])
+
+  const accent = propAccent || "#22d3ee"
+  const accentStrong = propAccentStrong || "#0e7490"
 
   useFrame(({ clock }) => {
     if (!meshRef.current) return
@@ -428,13 +449,16 @@ function ReactiveWave({ analyserDataRef, isPlaying }) {
 
   return (
     <mesh ref={meshRef} geometry={geometry} position={[0, -2.4, 0]}>
-      <meshStandardMaterial color="#22d3ee" wireframe transparent opacity={0.72} emissive="#0e7490" emissiveIntensity={0.5} />
+      <meshStandardMaterial color={accent} wireframe transparent opacity={0.72} emissive={accentStrong} emissiveIntensity={0.5} />
     </mesh>
   )
 }
 
-function FrequencyRing({ analyserDataRef, isPlaying }) {
+function FrequencyRing({ analyserDataRef, isPlaying, accent: propAccent, accentStrong: propAccentStrong }) {
   const barsRef = useRef([])
+
+  const accent = propAccent || "#22d3ee"
+  const accentStrong = propAccentStrong || "#0891b2"
 
   const bars = useMemo(() => {
     const count = 48
@@ -477,14 +501,14 @@ function FrequencyRing({ analyserDataRef, isPlaying }) {
           rotation={[0, bar.rotationY, 0]}
         >
           <boxGeometry args={[0.16, 1, 0.2]} />
-          <meshStandardMaterial color="#22d3ee" emissive="#0891b2" emissiveIntensity={0.3} />
+          <meshStandardMaterial color={accent} emissive={accentStrong} emissiveIntensity={0.3} />
         </mesh>
       ))}
     </group>
   )
 }
 
-function FloatingParticles({ isPlaying }) {
+function FloatingParticles({ isPlaying, accent: propAccent }) {
   const pointsRef = useRef(null)
 
   const [positions, material] = useMemo(() => {
@@ -498,7 +522,7 @@ function FloatingParticles({ isPlaying }) {
     }
 
     const pointsMaterial = new THREE.PointsMaterial({
-      color: "#22d3ee",
+      color: propAccent || "#22d3ee",
       size: 0.06,
       transparent: true,
       opacity: 0.45,
