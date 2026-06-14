@@ -16,6 +16,7 @@ import {
   X,
 } from "lucide-react"
 import usePlayerStore from "@store/player/PlayerStore"
+import { useThemeStore } from "@store/index"
 import ProfileVisualizer from "@components/music/visualizers/ProfileVisualizer"
 import { useMobile } from "@hooks/use-mobile"
 
@@ -58,6 +59,25 @@ export default function FloatingMusicPlayer() {
   const [ringProfile, setRingProfile] = useState("edm")
   const [isProfileSelectorOpen, setIsProfileSelectorOpen] = useState(false)
   const [isQueueOpen, setIsQueueOpen] = useState(false)
+  const theme = useThemeStore((state) => state.theme)
+  const [accent, setAccent] = useState("#22d3ee")
+  const [accentStrong, setAccentStrong] = useState("#0e7490")
+  const [bgColor, setBgColor] = useState("#000000")
+
+  const sceneDynamics = useMemo(() => {
+    switch (theme) {
+      case "purple":
+        return { ambient: 0.48, orbitSpeed: 0.3, cameraPosition: [0, 4.4, 10.4] }
+      case "rose":
+        return { ambient: 0.5, orbitSpeed: 0.36, cameraPosition: [0, 4.2, 10.1] }
+      case "amber":
+        return { ambient: 0.57, orbitSpeed: 0.24, cameraPosition: [0, 3.9, 9.7] }
+      case "emerald":
+        return { ambient: 0.54, orbitSpeed: 0.28, cameraPosition: [0, 4.1, 10.2] }
+      default:
+        return { ambient: 0.52, orbitSpeed: 0.45, cameraPosition: [0, 4, 10] }
+    }
+  }, [theme])
 
   const trackUrl = track?.url || ""
 
@@ -65,6 +85,19 @@ export default function FloatingMusicPlayer() {
     () => RING_PROFILE_OPTIONS.find((profileOption) => profileOption.key === ringProfile) ?? RING_PROFILE_OPTIONS[0],
     [ringProfile],
   )
+
+  useEffect(() => {
+    if (typeof window === "undefined") return
+
+    const root = window.getComputedStyle(document.documentElement)
+    const nextAccent = root.getPropertyValue("--prof-accent").trim() || "#22d3ee"
+    const nextAccentStrong = root.getPropertyValue("--prof-accent-strong").trim() || nextAccent
+    const nextBgColor = root.getPropertyValue("--prof-bg-base").trim() || "#000000"
+
+    setAccent(nextAccent)
+    setAccentStrong(nextAccentStrong)
+    setBgColor(nextBgColor)
+  }, [theme])
 
   const formatTime = (seconds) => {
     const safeValue = Number.isFinite(seconds) ? seconds : 0
@@ -329,10 +362,10 @@ export default function FloatingMusicPlayer() {
 
   return (
     <>
-      <div className="fixed bottom-4 right-4 z-50 w-[min(95vw,28rem)] rounded-2xl border border-(--prof-border) bg-(--prof-bg-elevated-strong)/95 p-3 shadow-[0_20px_60px_var(--prof-shadow-strong)] backdrop-blur-xl">
+      <div className="fixed bottom-4 right-4 z-50 w-[min(95vw,28rem)] rounded-2xl border border-(--prof-border) bg-(--prof-bg-base)/95 p-3 shadow-[0_20px_60px_var(--prof-theme-halo-2)] backdrop-blur-xl">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-500/15 text-cyan-300">
-            <Music size={20} />
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-(--prof-theme-halo-1)">
+            <Music size={20} className="text-(--prof-accent)" />
           </div>
 
           <div className="min-w-0 flex-1">
@@ -344,7 +377,7 @@ export default function FloatingMusicPlayer() {
             <button
               type="button"
               onClick={() => previousTrack()}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-slate-300 transition hover:bg-cyan-950/40 hover:text-cyan-200"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white transition hover:text-(--prof-accent)"
               aria-label="Previous track"
             >
               <SkipBack size={18} />
@@ -353,7 +386,7 @@ export default function FloatingMusicPlayer() {
               type="button"
               onClick={togglePlayback}
               disabled={isBusy}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-cyan-400 text-slate-950 transition hover:bg-cyan-300 disabled:opacity-60"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-(--prof-accent) text-slate-950 transition hover:bg-(--prof-accent-strong) disabled:opacity-60"
               aria-label={isPlaying ? "Pause" : "Play"}
             >
               {isPlaying ? <Pause size={18} /> : <Play size={18} fill="currentColor" />}
@@ -361,7 +394,7 @@ export default function FloatingMusicPlayer() {
             <button
               type="button"
               onClick={() => nextTrack()}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-slate-300 transition hover:bg-cyan-950/40 hover:text-cyan-200"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white transition hover:text-(--prof-accent)"
               aria-label="Next track"
             >
               <SkipForward size={18} />
@@ -369,7 +402,7 @@ export default function FloatingMusicPlayer() {
             <button
               type="button"
               onClick={openModal}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-slate-300 transition hover:bg-cyan-950/40 hover:text-cyan-200"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white transition hover:text-(--prof-accent)"
               aria-label="Open player modal"
             >
               <Maximize2 size={16} />
@@ -402,26 +435,32 @@ export default function FloatingMusicPlayer() {
       </div>
 
       {isModalOpen ? (
-        <div className="fixed inset-0 z-[60] flex items-end bg-black/70 p-3 sm:items-center sm:p-6" role="dialog" aria-modal="true">
+        <div className="fixed inset-0 z-60 flex items-end bg-black/70 p-3 sm:items-center sm:p-6" role="dialog" aria-modal="true">
           <div className="mx-auto flex h-[min(92vh,48rem)] w-full max-w-6xl flex-col overflow-hidden rounded-3xl border border-(--prof-border) bg-(--prof-bg-base) shadow-[0_30px_120px_rgba(2,12,27,0.8)] lg:flex-row">
             <div className="relative h-72 w-full border-b border-(--prof-border) lg:h-auto lg:flex-1 lg:border-b-0 lg:border-r">
-              <Canvas camera={{ position: [0, 4, 10], fov: 45 }}>
-                <color attach="background" args={["#000000"]} />
-                <fog attach="fog" args={["#000000", 8, 22]} />
-                <ambientLight intensity={0.52} />
-                <pointLight position={[0, 5, 6]} color="#22d3ee" intensity={1.25} />
-                <pointLight position={[0, -3, -4]} color="#0e7490" intensity={0.35} />
-                <ProfileVisualizer analyserDataRef={analyserDataRef} isPlaying={isPlaying} profile={ringProfile} />
+              <Canvas camera={{ position: sceneDynamics.cameraPosition, fov: 45 }}>
+                <color attach="background" args={[bgColor]} />
+                <fog attach="fog" args={[bgColor, 8, 22]} />
+                <ambientLight intensity={sceneDynamics.ambient} />
+                <pointLight position={[0, 5, 6]} color={accent} intensity={1.25} />
+                <pointLight position={[0, -3, -4]} color={accentStrong} intensity={0.35} />
+                <ProfileVisualizer
+                  analyserDataRef={analyserDataRef}
+                  isPlaying={isPlaying}
+                  profile={ringProfile}
+                  accent={accent}
+                  accentStrong={accentStrong}
+                />
               </Canvas>
 
               <div className="pointer-events-none absolute inset-x-0 top-0 bg-linear-to-b from-black/85 via-black/30 to-transparent p-5">
-                <p className="text-xs uppercase tracking-[0.28em] text-cyan-300">Now playing</p>
+                <p className="text-xs uppercase tracking-[0.28em] text-(--prof-accent-strong)">Now playing</p>
                 <h2 className="mt-1 text-2xl font-semibold text-white">{track.title}</h2>
                 <p className="text-sm text-slate-300">{track.artist}</p>
               </div>
             </div>
 
-            <div className="flex w-full flex-col lg:w-[25rem]">
+            <div className="flex w-full flex-col lg:w-100">
               <div className="flex items-center justify-between border-b border-(--prof-border) px-4 py-3">
                 <button
                   type="button"
@@ -431,7 +470,7 @@ export default function FloatingMusicPlayer() {
                   aria-controls="player-queue-list"
                   aria-label={isQueueOpen ? "Hide queue" : "Show queue"}
                 >
-                  <p className="text-sm font-semibold uppercase tracking-[0.22em] text-cyan-200">Queue</p>
+                  <p className="text-sm font-semibold uppercase tracking-[0.22em] text-(--prof-accent-strong)">Queue</p>
                   <span className="text-xs text-slate-500 sm:hidden">
                     {currentTrackIndex + 1}&nbsp;/&nbsp;{playlist.length}
                   </span>
@@ -444,7 +483,7 @@ export default function FloatingMusicPlayer() {
                   <button
                     type="button"
                     onClick={minimizeToMini}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-full text-slate-300 transition hover:bg-cyan-950/40 hover:text-cyan-200"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-full text-slate-300 transition hover:bg-(--prof-accent-soft) hover:text-(--prof-accent-strong)"
                     aria-label="Minimize player"
                   >
                     <Minimize2 size={16} />
@@ -471,15 +510,15 @@ export default function FloatingMusicPlayer() {
                         onClick={() => setTrackIndex(index)}
                         className={`flex w-full items-center justify-between rounded-2xl border px-3 py-3 text-left transition ${
                           isActive
-                            ? "border-cyan-400/40 bg-cyan-500/10"
-                            : "border-(--prof-border) bg-(--prof-bg-panel) hover:border-(--prof-border-strong)"
+                            ? "border-(--prof-accent-soft-strong) bg-(--prof-theme-halo-1)"
+                            : "border-(--prof-border) bg-(--prof-bg-elevated) hover:border-(--prof-border-strong)"
                         }`}
                       >
                         <div className="min-w-0">
                           <p className="truncate text-sm font-medium text-white">{item.title}</p>
                           <p className="truncate text-xs text-slate-400">{item.artist}</p>
                         </div>
-                        {isActive ? <ChevronDown size={16} className="text-cyan-300" /> : null}
+                        {isActive ? <ChevronDown size={16} className="text-(--prof-border-strong)" /> : null}
                       </button>
                     )
                   })}
@@ -490,14 +529,14 @@ export default function FloatingMusicPlayer() {
                 <div className="space-y-2 rounded-2xl border border-(--prof-border) bg-(--prof-bg-panel) p-3">
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-200">Shape profile</p>
+                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-(--prof-accent-strong)">Shape profile</p>
                       <p className="mt-1 truncate text-xs text-slate-400 sm:hidden">{activeRingProfile.label} selected</p>
                     </div>
 
                     <button
                       type="button"
                       onClick={() => setIsProfileSelectorOpen((currentValue) => !currentValue)}
-                      className="inline-flex h-9 items-center gap-2 rounded-full border border-(--prof-border) bg-(--prof-bg-elevated) px-3 text-[11px] font-medium uppercase tracking-[0.16em] text-slate-200 transition hover:border-cyan-400/40 hover:text-cyan-100 sm:hidden"
+                      className="inline-flex h-9 items-center gap-2 rounded-full border border-(--prof-border) bg-(--prof-bg-elevated) px-3 text-[11px] font-medium uppercase tracking-[0.16em] text-slate-200 transition hover:border-(--prof-border-strong) hover:text-(--prof-accent-strong) sm:hidden"
                       aria-expanded={isProfileSelectorOpen}
                       aria-controls="profile-visualizer-options"
                       aria-label={isProfileSelectorOpen ? "Hide shape profile options" : "Show shape profile options"}
@@ -524,8 +563,8 @@ export default function FloatingMusicPlayer() {
                             className={[
                               "rounded-xl border px-3 py-2 text-xs font-medium uppercase tracking-[0.18em] transition",
                               isActive
-                                ? "border-cyan-300/60 bg-cyan-400/20 text-cyan-100"
-                                : "border-(--prof-border) bg-(--prof-bg-elevated) text-slate-300 hover:border-(--prof-border-strong) hover:text-cyan-100",
+                                ? "border-(--prof-border-strong) bg-(--prof-theme-halo-1)"
+                                : "border-(--prof-border) bg-(--prof-bg-elevated) text-slate-300 hover:border-(--prof-border-strong) hover:text-(--prof-accent-strong)",
                             ].join(" ")}
                           >
                             {profileOption.label}
@@ -559,7 +598,7 @@ export default function FloatingMusicPlayer() {
                     <button
                       type="button"
                       onClick={toggleMute}
-                      className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-(--prof-border) bg-(--prof-bg-panel) text-white transition hover:border-cyan-400/50 hover:text-cyan-300"
+                      className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-(--prof-border) bg-(--prof-bg-panel) text-white transition hover:border-(--prof-border-strong) hover:text-(--prof-accent-strong)"
                     >
                       {volumeIcon}
                     </button>
@@ -578,7 +617,7 @@ export default function FloatingMusicPlayer() {
                     <button
                       type="button"
                       onClick={previousTrack}
-                      className="inline-flex h-10 w-10 items-center justify-center rounded-full text-white transition hover:bg-cyan-950/40 hover:text-cyan-200"
+                      className="inline-flex h-10 w-10 items-center justify-center rounded-full text-white transition hover:bg-(--prof-accent-soft) hover:text-(--prof-accent-strong)"
                     >
                       <SkipBack size={18} />
                     </button>
@@ -586,14 +625,14 @@ export default function FloatingMusicPlayer() {
                       type="button"
                       onClick={togglePlayback}
                       disabled={isBusy}
-                      className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-cyan-400 text-slate-950 transition hover:bg-cyan-300 disabled:opacity-60"
+                      className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-(--prof-accent) text-slate-950 transition hover:bg-(--prof-accent-strong) disabled:opacity-60"
                     >
                       {isPlaying ? <Pause size={20} /> : <Play size={20} fill="currentColor" />}
                     </button>
                     <button
                       type="button"
                       onClick={nextTrack}
-                      className="inline-flex h-10 w-10 items-center justify-center rounded-full text-white transition hover:bg-cyan-950/40 hover:text-cyan-200"
+                      className="inline-flex h-10 w-10 items-center justify-center rounded-full text-white transition hover:bg-(--prof-accent-soft) hover:text-(--prof-accent-strong)"
                     >
                       <SkipForward size={18} />
                     </button>
@@ -603,7 +642,7 @@ export default function FloatingMusicPlayer() {
                 <button
                   type="button"
                   onClick={downloadTrack}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-(--prof-border) bg-(--prof-bg-panel) px-4 py-2.5 text-sm text-white transition hover:border-cyan-400/50 hover:bg-cyan-950/30 hover:text-cyan-200"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-(--prof-border) bg-(--prof-bg-panel) px-4 py-2.5 text-sm text-white transition hover:border-(--prof-border-strong) hover:bg-(--prof-theme-halo-1) cursor-pointer"
                 >
                   <Download size={16} />
                   Download current track

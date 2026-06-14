@@ -24,6 +24,11 @@ const ENDPOINTS = {
     validateUserName: (us) =>  `/user/validateUsername/${encodeURI(us)}`
   },
 
+  music: {
+    publicPlaylist: '/Music/getPublicPlaylist',
+    downloadSongYTservice: '/Music/downloadYTSong'
+  },
+
   // Example: future modules
   // projects: {
   //   list: '/projects',

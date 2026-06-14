@@ -94,6 +94,8 @@ html[data-prof-theme="emerald"] {
 html {
   background: var(--prof-bg-base);
   color-scheme: dark;
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -110,6 +112,31 @@ html[data-prof-reduce-motion="true"] *::after {
   transition-duration: 0.01ms !important;
   scroll-behavior: auto !important;
 }
+
+
+/* Scroll bar styles */
+.scrollbar-prof::-webkit-scrollbar {
+  height: 4px; /* horizontal scrollbar height */
+}
+
+.scrollbar-prof::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-prof::-webkit-scrollbar-thumb {
+  background: var(--prof-border-strong);
+  border-radius: 999px;
+}
+
+.scrollbar-prof::-webkit-scrollbar-thumb:hover {
+  background: var(--prof-accent);
+}
+
+.scrollbar-prof {
+  scrollbar-width: thin;
+  scrollbar-color: var(--prof-border-strong) transparent;
+}
+
 
 /*Import font*/
 @font-face {

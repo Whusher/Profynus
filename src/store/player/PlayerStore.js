@@ -22,6 +22,21 @@ export const DEFAULT_PLAYLIST = [
   },
 ]
 
+const normalizeTrack = (track, index = 0) => ({
+  id: track?.id || `${track?.title || track?.songName || 'track'}-${index}`,
+  title: track?.title || track?.songName || 'Untitled track',
+  artist: track?.artist || track?.artistName || 'Profynus',
+  url: track?.url || track?.audioUrl || track?.downloadURL || track?.src || '',
+  thumbnailUrl: track?.thumbnailUrl || track?.thumbnail || '',
+  album: track?.album || track?.albumName || '',
+  genre: track?.genre || '',
+  releaseYear: track?.releaseYear || '',
+  durationSeconds: track?.durationSeconds || 0,
+  source: track,
+})
+
+const mapPlaylist = (tracks = []) => tracks.map((track, index) => normalizeTrack(track, index))
+
 const usePlayerStore = create(
   devtools(
     (set, get) => ({
@@ -29,6 +44,34 @@ const usePlayerStore = create(
       currentTrackIndex: 0,
       isVisible: false,
       isModalOpen: false,
+
+      setPlaylist: (tracks, { keepCurrentTrack = false } = {}) => {
+        const nextPlaylist = mapPlaylist(tracks)
+
+        set((state) => ({
+          playlist: nextPlaylist,
+          currentTrackIndex:
+            keepCurrentTrack && state.currentTrackIndex < nextPlaylist.length
+              ? state.currentTrackIndex
+              : 0,
+        }))
+      },
+
+      appendToPlaylist: (tracks) => {
+        const existingPlaylist = get().playlist
+        const nextTracks = mapPlaylist(tracks)
+        const nextPlaylist = [...existingPlaylist]
+
+        nextTracks.forEach((track) => {
+          const exists = nextPlaylist.some((playlistTrack) => playlistTrack.id === track.id)
+
+          if (!exists) {
+            nextPlaylist.push(track)
+          }
+        })
+
+        set({ playlist: nextPlaylist })
+      },
 
       setTrackIndex: (index) => {
         const maxIndex = get().playlist.length - 1

@@ -18,12 +18,13 @@ export default function Header() {
   const user = useAuthStore((state) => state.user)
   const logout = useAuthStore((state) => state.logout)
   const headerRef = useRef(null)
+  const topBarRef = useRef(null)
   const lastScrollYRef = useRef(0)
   const animationFrameRef = useRef(0)
 
   const [currentTime, setCurrentTime] = useState(new Date())
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [headerHeight, setHeaderHeight] = useState(0)
+  const [topBarHeight, setTopBarHeight] = useState(0)
   const [isHeaderVisible, setIsHeaderVisible] = useState(true)
 
   const displayName = user?.name || user?.username || "Profynus User"
@@ -39,31 +40,31 @@ export default function Header() {
   }, [])
 
   useEffect(() => {
-    const updateHeaderHeight = () => {
-      setHeaderHeight(headerRef.current?.offsetHeight || 0)
+    const updateTopBarHeight = () => {
+      setTopBarHeight(topBarRef.current?.offsetHeight || 0)
     }
 
-    updateHeaderHeight()
+    updateTopBarHeight()
 
     if (typeof window === "undefined") {
       return undefined
     }
 
-    window.addEventListener("resize", updateHeaderHeight)
+    window.addEventListener("resize", updateTopBarHeight)
 
-    if (typeof ResizeObserver === "undefined" || !headerRef.current) {
-      return () => window.removeEventListener("resize", updateHeaderHeight)
+    if (typeof ResizeObserver === "undefined" || !topBarRef.current) {
+      return () => window.removeEventListener("resize", updateTopBarHeight)
     }
 
     const resizeObserver = new ResizeObserver(() => {
-      updateHeaderHeight()
+      updateTopBarHeight()
     })
 
-    resizeObserver.observe(headerRef.current)
+    resizeObserver.observe(topBarRef.current)
 
     return () => {
       resizeObserver.disconnect()
-      window.removeEventListener("resize", updateHeaderHeight)
+      window.removeEventListener("resize", updateTopBarHeight)
     }
   }, [])
 
@@ -107,6 +108,24 @@ export default function Header() {
     }
   }, [isMenuOpen])
 
+  useEffect(() => {
+    if (typeof document === "undefined") {
+      return undefined
+    }
+
+    if (!isMenuOpen) {
+      document.body.style.overflow = ""
+      return undefined
+    }
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [isMenuOpen])
+
   const formattedTime = currentTime.toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
@@ -123,7 +142,7 @@ export default function Header() {
 
   return (
     <>
-      <div aria-hidden="true" style={{ height: headerHeight }} />
+      <div aria-hidden="true" style={{ height: topBarHeight }} />
       <header
         ref={headerRef}
         className={[
@@ -131,7 +150,7 @@ export default function Header() {
           isHeaderVisible ? "translate-y-0" : "-translate-y-full",
         ].join(" ")}
       >
-        <div className="mx-auto flex w-full max-w-7xl flex-col px-4 sm:px-6 lg:max-w-352 lg:px-8 2xl:max-w-384 2xl:px-10">
+        <div ref={topBarRef} className="mx-auto flex w-full max-w-7xl flex-col px-4 sm:px-6 lg:max-w-352 lg:px-8 2xl:max-w-384 2xl:px-10">
           <div className="flex min-h-20 items-center justify-between gap-3 py-3">
           <div className="flex min-w-0 items-center gap-3">
             <Link
@@ -216,8 +235,14 @@ export default function Header() {
           </div>
 
           {isMenuOpen ? (
-            <div className="border-t border-(--prof-border) py-4 lg:hidden">
-              <div className="space-y-4 rounded-[28px] border-(--prof-border) bg-(--prof-bg-elevated-strong) p-4 shadow-[0_20px_60px_var(--prof-shadow-strong)]">
+            <div
+              className="fixed inset-x-0 z-40 border-t border-(--prof-border) bg-(--prof-bg-base)/98 px-4 py-4 shadow-[0_24px_80px_var(--prof-shadow-strong)] backdrop-blur-xl lg:hidden"
+              style={{ top: topBarHeight }}
+            >
+              <div
+                className="mx-auto space-y-4 overflow-y-auto overscroll-contain rounded-[28px] border-(--prof-border) bg-(--prof-bg-elevated-strong) p-4"
+                style={{ maxHeight: `calc(100dvh - ${topBarHeight}px - 1rem)` }}
+              >
                 <div className="flex items-center gap-3 rounded-2xl border-(--prof-border) bg-(--prof-bg-chip) p-3">
                   <div className="flex h-11 w-11 items-center justify-center rounded-full bg-(--prof-accent) text-sm font-semibold text-slate-950">
                     {avatarLabel}
@@ -303,7 +328,7 @@ export default function Header() {
                   </button>
                 </div>
               </div>
-            </div>
+              </div>
           ) : null}
         </div>
       </header>

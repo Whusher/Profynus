@@ -2,20 +2,20 @@ import { useEffect, useMemo, useRef } from "react"
 import { useFrame } from "@react-three/fiber"
 import * as THREE from "three"
 
-export default function ProfileVisualizer({ profile, analyserDataRef, isPlaying }) {
+export default function ProfileVisualizer({ profile, analyserDataRef, isPlaying, accent = "#22d3ee", accentStrong = "#0e7490" }) {
   if (profile === "aggressive") {
-    return <AggressiveBeatCrown analyserDataRef={analyserDataRef} isPlaying={isPlaying} />
+    return <AggressiveBeatCrown analyserDataRef={analyserDataRef} isPlaying={isPlaying} accent={accent} accentStrong={accentStrong} />
   }
 
   if (profile === "soft") {
-    return <SoftRibbon analyserDataRef={analyserDataRef} isPlaying={isPlaying} />
+    return <SoftRibbon analyserDataRef={analyserDataRef} isPlaying={isPlaying} accent={accent} accentStrong={accentStrong} />
   }
 
   if (profile === "relax") {
-    return <RelaxOrb analyserDataRef={analyserDataRef} isPlaying={isPlaying} />
+    return <RelaxOrb analyserDataRef={analyserDataRef} isPlaying={isPlaying} accent={accent} accentStrong={accentStrong} />
   }
 
-  return <EdmPulseRings analyserDataRef={analyserDataRef} isPlaying={isPlaying} />
+  return <EdmPulseRings analyserDataRef={analyserDataRef} isPlaying={isPlaying} accent={accent} accentStrong={accentStrong} />
 }
 
 function getBassEnergy(data) {
@@ -31,7 +31,7 @@ function getBassEnergy(data) {
   )
 }
 
-function AggressiveBeatCrown({ analyserDataRef, isPlaying }) {
+function AggressiveBeatCrown({ analyserDataRef, isPlaying, accent, accentStrong }) {
   const crownRef = useRef(null)
   const innerShellRef = useRef(null)
   const outerShellRef = useRef(null)
@@ -164,12 +164,12 @@ function AggressiveBeatCrown({ analyserDataRef, isPlaying }) {
     <group position={[0, 0.2, 0]}>
       <mesh ref={innerShellRef}>
         <icosahedronGeometry args={[1.45, 5]} />
-        <meshBasicMaterial color="#22d3ee" wireframe transparent opacity={0.28} />
+        <meshBasicMaterial color={accent} wireframe transparent opacity={0.28} />
       </mesh>
 
       <mesh ref={outerShellRef}>
         <sphereGeometry args={[2.15, 42, 42]} />
-        <meshBasicMaterial color="#f97316" wireframe transparent opacity={0.18} />
+        <meshBasicMaterial color={accentStrong} wireframe transparent opacity={0.18} />
       </mesh>
 
       <group ref={crownRef}>
@@ -185,7 +185,7 @@ function AggressiveBeatCrown({ analyserDataRef, isPlaying }) {
               castShadow
             >
               {/* <boxGeometry args={[0.11, 1, 0.34]} /> */}
-              <meshStandardMaterial color="#f97316" emissive="#22d3ee" emissiveIntensity={0.52} roughness={0.22} metalness={0.18} />
+              <meshStandardMaterial color={accentStrong} emissive={accent} emissiveIntensity={0.52} roughness={0.22} metalness={0.18} />
             </mesh>
           )
         })}
@@ -195,7 +195,7 @@ function AggressiveBeatCrown({ analyserDataRef, isPlaying }) {
   )
 }
 
-function SoftRibbon({ analyserDataRef, isPlaying }) {
+function SoftRibbon({ analyserDataRef, isPlaying, accent, accentStrong }) {
   const knotRef = useRef(null)
   const haloRef = useRef(null)
 
@@ -220,18 +220,18 @@ function SoftRibbon({ analyserDataRef, isPlaying }) {
     <group position={[0, 0.15, 0]}>
       <mesh ref={knotRef}>
         <torusKnotGeometry args={[1.35, 0.22, 160, 24, 2, 5]} />
-        <meshStandardMaterial color="#a5f3fc" emissive="#155e75" emissiveIntensity={0.3} roughness={0.48} metalness={0.14} />
+        <meshStandardMaterial color={accent} emissive={accentStrong} emissiveIntensity={0.3} roughness={0.48} metalness={0.14} />
       </mesh>
 
       <mesh ref={haloRef} rotation={[Math.PI / 2, 0, 0]}>
         <ringGeometry args={[2.45, 2.62, 80]} />
-        <meshBasicMaterial color="#67e8f9" transparent opacity={0.22} side={THREE.DoubleSide} />
+        <meshBasicMaterial color={accent} transparent opacity={0.22} side={THREE.DoubleSide} />
       </mesh>
     </group>
   )
 }
 
-function EdmPulseRings({ analyserDataRef, isPlaying }) {
+function EdmPulseRings({ analyserDataRef, isPlaying, accent, accentStrong }) {
   const waveLineRef = useRef(null)
   const glowLineRef = useRef(null)
   const pointCount = 160
@@ -293,9 +293,8 @@ function EdmPulseRings({ analyserDataRef, isPlaying }) {
     waveLineRef.current.geometry.attributes.position.needsUpdate = true
     glowLineRef.current.geometry.attributes.position.needsUpdate = true
 
-    const hue = 0.54 + Math.min(0.12, bassEnergy * 0.16)
-    waveLineRef.current.material.color.setHSL(hue, 0.95, 0.62)
-    glowLineRef.current.material.color.setHSL(0.06 + Math.min(0.1, bassEnergy * 0.14), 0.95, 0.58)
+    waveLineRef.current.material.color.set(accent)
+    glowLineRef.current.material.color.set(accentStrong)
     waveLineRef.current.material.opacity = THREE.MathUtils.lerp(
       waveLineRef.current.material.opacity,
       0.8 + bassEnergy * 0.18,
@@ -319,7 +318,7 @@ function EdmPulseRings({ analyserDataRef, isPlaying }) {
             itemSize={3}
           />
         </bufferGeometry>
-        <lineBasicMaterial color="#22d3ee" transparent opacity={0.86} />
+        <lineBasicMaterial color={accent} transparent opacity={0.86} />
       </line>
 
       <line ref={glowLineRef}>
@@ -331,7 +330,7 @@ function EdmPulseRings({ analyserDataRef, isPlaying }) {
             itemSize={3}
           />
         </bufferGeometry>
-        <lineBasicMaterial color="#f97316" transparent opacity={0.38} />
+        <lineBasicMaterial color={accentStrong} transparent opacity={0.38} />
       </line>
 
       <line>
@@ -343,13 +342,13 @@ function EdmPulseRings({ analyserDataRef, isPlaying }) {
             itemSize={3}
           />
         </bufferGeometry>
-        <lineBasicMaterial color="#0e7490" transparent opacity={0.25} />
+        <lineBasicMaterial color={accentStrong} transparent opacity={0.25} />
       </line>
     </group>
   )
 }
 
-function RelaxOrb({ analyserDataRef, isPlaying }) {
+function RelaxOrb({ analyserDataRef, isPlaying, accent, accentStrong }) {
   const orbRef = useRef(null)
   const shellRef = useRef(null)
   const shellBasePositionsRef = useRef(null)
@@ -413,12 +412,12 @@ function RelaxOrb({ analyserDataRef, isPlaying }) {
     <group position={[0, 0.1, 0]}>
       <mesh ref={orbRef}>
         <icosahedronGeometry args={[1.6, 4]} />
-        <meshStandardMaterial color="#67e8f9" emissive="#155e75" emissiveIntensity={0.22} roughness={0.62} metalness={0.06} flatShading />
+        <meshStandardMaterial color={accent} emissive={accentStrong} emissiveIntensity={0.22} roughness={0.62} metalness={0.06} flatShading />
       </mesh>
 
       <mesh ref={shellRef}>
         <sphereGeometry args={[2.25, 48, 48]} />
-        <meshBasicMaterial color="#22d3ee" wireframe transparent opacity={0.12} />
+        <meshBasicMaterial color={accent} wireframe transparent opacity={0.12} />
       </mesh>
     </group>
   )
