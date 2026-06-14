@@ -63,6 +63,11 @@ export default function FloatingMusicPlayer() {
   const [accent, setAccent] = useState("#22d3ee")
   const [accentStrong, setAccentStrong] = useState("#0e7490")
   const [bgColor, setBgColor] = useState("#000000")
+  // Next Track
+  const nextTrackRef = useRef(nextTrack)
+  useEffect(() => { nextTrackRef.current = nextTrack }, [nextTrack])
+  // Auto play next song in the queue 
+  const shouldAutoPlayRef = useRef(false)
 
   const sceneDynamics = useMemo(() => {
     switch (theme) {
@@ -147,7 +152,8 @@ export default function FloatingMusicPlayer() {
       })
 
       element.addEventListener("ended", () => {
-        nextTrack()
+        shouldAutoPlayRef.current = true  // signal intent to auto-play
+        nextTrackRef.current()
       })
 
       element.addEventListener("error", () => {
@@ -181,12 +187,15 @@ export default function FloatingMusicPlayer() {
     }
 
     return true
-  }, [nextTrack, runAnalyserLoop, trackUrl, volume])
+  }, [runAnalyserLoop, trackUrl, volume])
 
   useEffect(() => {
     if (!audioRef.current || !trackUrl) return
 
-    const shouldResume = !audioRef.current.paused
+    // const shouldResume = !audioRef.current.paused
+    const shouldResume = !audioRef.current.paused || shouldAutoPlayRef.current;
+    shouldAutoPlayRef.current = false; // reset after consuming
+
     audioRef.current.src = trackUrl
     audioRef.current.load()
     setCurrentTime(0)
