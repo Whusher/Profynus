@@ -110,28 +110,6 @@ function MusicPlayerContent() {
       aside={<PlayerAside />}
     >
       <TemplateCard
-        title="Player sample"
-        description="Includes play/pause, seek, skip, loop, volume, download, and 3D audio-reactive scene."
-      >
-        <div className="mb-5 flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={() => {
-              openPlayer(0)
-              openModal()
-            }}
-            className="inline-flex items-center gap-2 rounded-full border border-cyan-300/30 bg-cyan-400 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-cyan-300"
-          >
-            Launch persistent mini player
-          </button>
-          <p className="text-sm text-(--prof-text-muted)">
-            Open the floating player, minimize it, and keep browsing while audio continues.
-          </p>
-        </div>
-        <MusicPlayerSample />
-      </TemplateCard>
-
-      <TemplateCard
         title="Public song library"
         description="A horizontally scrollable catalog powered by the public playlist endpoint. Tap a card to open the floating player or copy the audio URL for later use."
       >
